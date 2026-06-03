@@ -333,7 +333,7 @@ if (isEmbeddedPreview) {
       musicPanelToggle.setAttribute("aria-expanded", "false");
       musicPanelTimer = window.setTimeout(() => {
         musicWidget.classList.remove("is-closing");
-      }, 1500);
+      }, 520);
       return;
     }
 

@@ -498,17 +498,69 @@ body.admin-editing textarea[data-save-field] {
 
 .music-toggle {
   display: inline-flex;
-  min-height: 48px;
+  min-height: 50px;
   align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: 999px;
-  padding: 0 16px;
+  padding: 6px 18px 6px 7px;
   color: var(--white);
-  background: rgba(51, 64, 43, 0.82);
-  box-shadow: 0 18px 50px rgba(20, 26, 17, 0.24);
-  backdrop-filter: blur(14px);
+  background:
+    linear-gradient(135deg, rgba(97, 114, 75, 0.96), rgba(51, 64, 43, 0.9));
+  box-shadow: 0 18px 46px rgba(20, 26, 17, 0.28);
+  backdrop-filter: blur(16px);
   font-weight: 800;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.music-toggle:hover {
+  box-shadow: 0 22px 58px rgba(20, 26, 17, 0.34);
+  transform: translateY(-2px);
+}
+
+.music-toggle:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.music-action-icon {
+  position: relative;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(251, 250, 246, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.music-action-icon::before {
+  content: "";
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 12px solid #f8f7f1;
+}
+
+.music-action-icon::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.62);
+}
+
+.music-toggle:hover .music-action-icon {
+  background: rgba(251, 250, 246, 0.25);
+  transform: rotate(6deg);
+}
+
+.music-toggle:hover .music-action-icon::after {
+  animation: musicPulse 900ms ease;
 }
 
 .music-icon {
@@ -531,7 +583,7 @@ body.admin-editing textarea[data-save-field] {
   opacity: 0;
   pointer-events: none;
   transform: translateY(12px) scale(0.96);
-  transition: opacity 1500ms ease, transform 1500ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 520ms ease, transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .music-panel::before,
@@ -582,19 +634,19 @@ body.admin-editing textarea[data-save-field] {
 }
 
 .music-widget.is-open .music-panel::before {
-  animation: luminousVeil 1500ms ease forwards;
+  animation: luminousVeil 620ms ease forwards;
 }
 
 .music-widget.is-open .music-panel::after {
-  animation: musicLeaves 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: musicLeaves 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .music-widget.is-closing .music-panel::before {
-  animation: luminousFade 1500ms ease forwards;
+  animation: luminousFade 520ms ease forwards;
 }
 
 .music-widget.is-closing .music-panel::after {
-  animation: musicLeavesClose 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  animation: musicLeavesClose 520ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
 }
 
 .music-panel-head {
@@ -984,25 +1036,48 @@ h3 {
 }
 
 .timeline {
+  position: relative;
   display: grid;
-  gap: 18px;
+  gap: 0;
+  padding-left: 54px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 18px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(97, 114, 75, 0.72) 0 7px,
+    transparent 7px 15px
+  );
 }
 
 .timeline-item {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 22px;
-  padding: 24px 0;
+  position: relative;
+  display: block;
+  padding: 24px 0 24px 10px;
   border-bottom: 1px solid rgba(51, 64, 43, 0.18);
 }
 
-.timeline-item time {
-  color: var(--olive);
-  font-family: var(--numbers);
-  font-size: 1.85rem;
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 29px;
+  left: -43px;
+  width: 13px;
+  height: 13px;
+  border: 3px solid var(--gray-soft);
+  border-radius: 50%;
+  background: var(--olive);
+  box-shadow: 0 0 0 1px rgba(97, 114, 75, 0.34), 0 0 0 8px rgba(97, 114, 75, 0.08);
+}
+
+.timeline-item h3 {
+  margin-top: 0;
 }
 
 .venue-panel {
@@ -2016,6 +2091,17 @@ fieldset {
   }
 }
 
+@keyframes musicPulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.62);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
 @keyframes clickPetal {
   0% {
     opacity: 0;
@@ -2068,7 +2154,6 @@ fieldset {
   .story-grid,
   .details-layout,
   .attire-section,
-  .rsvp-section,
   .gift-grid,
   .memory-board {
     grid-template-columns: 1fr;
