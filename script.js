@@ -99,17 +99,23 @@ function ensureLeafBurst(modal) {
       startY = Math.random() * height;
     }
 
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const driftX = centerX - startX + (Math.random() - 0.5) * width * 0.72;
-    const driftY = centerY - startY + (Math.random() - 0.5) * height * 0.72;
-    const endX = driftX + (Math.random() - 0.5) * 140;
-    const endY = driftY + (Math.random() - 0.5) * 110;
+    const fromCenterX = startX - width / 2;
+    const fromCenterY = startY - height / 2;
+    const length = Math.max(Math.hypot(fromCenterX, fromCenterY), 1);
+    const normalX = fromCenterX / length;
+    const normalY = fromCenterY / length;
+    const sideWobble = (Math.random() - 0.5) * 120;
+    const tangentX = -normalY;
+    const tangentY = normalX;
+    const midX = normalX * (70 + Math.random() * 80) + tangentX * sideWobble;
+    const midY = normalY * (70 + Math.random() * 80) + tangentY * sideWobble - 22;
+    const endX = normalX * (180 + Math.random() * 190) + tangentX * sideWobble * 1.35;
+    const endY = normalY * (180 + Math.random() * 190) + tangentY * sideWobble * 1.35 - 30;
 
     leaf.style.left = `${startX}px`;
     leaf.style.top = `${startY}px`;
-    leaf.style.setProperty("--mid-x", `${driftX * 0.55}px`);
-    leaf.style.setProperty("--mid-y", `${driftY * 0.45 - 34}px`);
+    leaf.style.setProperty("--mid-x", `${midX}px`);
+    leaf.style.setProperty("--mid-y", `${midY}px`);
     leaf.style.setProperty("--end-x", `${endX}px`);
     leaf.style.setProperty("--end-y", `${endY}px`);
     leaf.style.setProperty("--r", `${Math.round((Math.random() - 0.5) * 420)}deg`);
@@ -236,8 +242,6 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   "historia-encontro",
   "historia-pedido",
   "historia-grande-dia",
-  "casa",
-  "lua",
   "pix",
 ].forEach((slot) => renderPhotoPreview(slot, getStoredPhotos(slot)));
 
@@ -259,7 +263,7 @@ function setMusicHint(text) {
 
 function updateMusicState() {
   if (!music || !musicState || !musicEnabled) return;
-  musicState.textContent = music.paused || !musicEnabled.checked ? "Música" : "Tocando";
+  musicState.textContent = "Música";
 }
 
 function fadeMusicTo(target, duration = 3000) {

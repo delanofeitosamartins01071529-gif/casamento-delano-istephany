@@ -36,8 +36,6 @@ const editableSelectors = [
   ".attire-section h2",
   ".attire-section p",
   ".palette span",
-  ".rsvp-copy h2",
-  ".rsvp-copy p",
   ".gift-card span",
   ".gift-card strong",
   ".gift-modal h2",
@@ -185,15 +183,23 @@ function seedCropLeaves() {
       startY = Math.random() * height;
     }
 
-    const driftX = width / 2 - startX + (Math.random() - 0.5) * width * 0.72;
-    const driftY = height / 2 - startY + (Math.random() - 0.5) * height * 0.72;
-    const endX = driftX + (Math.random() - 0.5) * 140;
-    const endY = driftY + (Math.random() - 0.5) * 110;
+    const fromCenterX = startX - width / 2;
+    const fromCenterY = startY - height / 2;
+    const length = Math.max(Math.hypot(fromCenterX, fromCenterY), 1);
+    const normalX = fromCenterX / length;
+    const normalY = fromCenterY / length;
+    const sideWobble = (Math.random() - 0.5) * 120;
+    const tangentX = -normalY;
+    const tangentY = normalX;
+    const midX = normalX * (70 + Math.random() * 80) + tangentX * sideWobble;
+    const midY = normalY * (70 + Math.random() * 80) + tangentY * sideWobble - 22;
+    const endX = normalX * (180 + Math.random() * 190) + tangentX * sideWobble * 1.35;
+    const endY = normalY * (180 + Math.random() * 190) + tangentY * sideWobble * 1.35 - 30;
 
     leaf.style.left = `${startX}px`;
     leaf.style.top = `${startY}px`;
-    leaf.style.setProperty("--mid-x", `${driftX * 0.55}px`);
-    leaf.style.setProperty("--mid-y", `${driftY * 0.45 - 34}px`);
+    leaf.style.setProperty("--mid-x", `${midX}px`);
+    leaf.style.setProperty("--mid-y", `${midY}px`);
     leaf.style.setProperty("--end-x", `${endX}px`);
     leaf.style.setProperty("--end-y", `${endY}px`);
     leaf.style.setProperty("--r", `${Math.round((Math.random() - 0.5) * 420)}deg`);

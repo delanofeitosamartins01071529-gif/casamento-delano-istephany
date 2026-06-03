@@ -146,12 +146,12 @@ textarea {
 
 .flower-logo {
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 21px;
+  height: 21px;
   color: currentColor;
   background: currentColor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23000' stroke-width='5.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M48 42C38 30 39 17 48 8c9 9 10 22 0 34Z'/%3E%3Cpath d='M41 49C25 47 14 38 12 25c13-2 25 4 33 19Z'/%3E%3Cpath d='M55 49c16-2 27-11 29-24-13-2-25 4-33 19Z'/%3E%3Cpath d='M42 56C28 63 22 76 28 88c13-1 23-11 25-28Z'/%3E%3Cpath d='M54 56c14 7 20 20 14 32-13-1-23-11-25-28Z'/%3E%3Ccircle cx='48' cy='51' r='5'/%3E%3Cpath d='M48 57v15M43 54 30 62M53 54l13 8M43 48 31 41M53 48l12-7'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23000' stroke-width='5.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M48 42C38 30 39 17 48 8c9 9 10 22 0 34Z'/%3E%3Cpath d='M41 49C25 47 14 38 12 25c13-2 25 4 33 19Z'/%3E%3Cpath d='M55 49c16-2 27-11 29-24-13-2-25 4-33 19Z'/%3E%3Cpath d='M42 56C28 63 22 76 28 88c13-1 23-11 25-28Z'/%3E%3Cpath d='M54 56c14 7 20 20 14 32-13-1-23-11-25-28Z'/%3E%3Ccircle cx='48' cy='51' r='5'/%3E%3Cpath d='M48 57v15M43 54 30 62M53 54l13 8M43 48 31 41M53 48l12-7'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23000' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 30C24 21 25 12 32 7c7 5 8 14 0 23Z'/%3E%3Cpath d='M29 34c-12 1-20-5-21-14 9-3 17 1 24 10Z'/%3E%3Cpath d='M35 34c12 1 20-5 21-14-9-3-17 1-24 10Z'/%3E%3Cpath d='M29 38c-7 9-16 11-22 5 4-8 13-10 23-6Z'/%3E%3Cpath d='M35 38c7 9 16 11 22 5-4-8-13-10-23-6Z'/%3E%3Ccircle cx='32' cy='34' r='3.4'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23000' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M32 30C24 21 25 12 32 7c7 5 8 14 0 23Z'/%3E%3Cpath d='M29 34c-12 1-20-5-21-14 9-3 17 1 24 10Z'/%3E%3Cpath d='M35 34c12 1 20-5 21-14-9-3-17 1-24 10Z'/%3E%3Cpath d='M29 38c-7 9-16 11-22 5 4-8 13-10 23-6Z'/%3E%3Cpath d='M35 38c7 9 16 11 22 5-4-8-13-10-23-6Z'/%3E%3Ccircle cx='32' cy='34' r='3.4'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .flower-logo::before,
@@ -1304,6 +1304,33 @@ fieldset {
   font-family: var(--serif);
   font-size: 2rem;
   line-height: 1;
+}
+
+.gifts-section .gift-grid {
+  grid-template-columns: 1fr;
+  max-width: 860px;
+}
+
+.pix-bar {
+  min-height: 96px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  align-content: center;
+  padding: 24px clamp(24px, 5vw, 42px);
+  text-align: left;
+}
+
+.pix-bar::after {
+  content: "Abrir";
+  color: var(--olive);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pix-bar span,
+.pix-bar strong {
+  grid-column: 1;
 }
 
 .site-footer {

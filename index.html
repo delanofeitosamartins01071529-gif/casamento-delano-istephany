@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260603-04" />
+    <link rel="stylesheet" href="styles.css?v=20260603-06" />
   </head>
   <body>
     <header class="site-header" aria-label="Cabeçalho do site">
@@ -25,7 +25,6 @@
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="#historia">História</a>
         <a href="#programacao">Programação</a>
-        <a href="#presenca">Presença</a>
         <a href="#presentes">Presentes</a>
       </nav>
       <a class="admin-button" href="admin.html" aria-label="Acessar modo ADM">
@@ -66,7 +65,7 @@
             vamos celebrar o nosso sim.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#presenca">Confirmar presença</a>
+            <a class="button primary" href="#presentes">Ver Pix dos noivos</a>
             <a class="button secondary" href="#programacao">Ver detalhes</a>
           </div>
         </div>
@@ -178,11 +177,12 @@
 
       <section class="section attire-section">
         <div>
-          <p class="eyebrow">Dress code</p>
-          <h2>Elegante, leve e confortável.</h2>
+          <p class="eyebrow">Paleta do casamento</p>
+          <h2>As cores que contam o nosso dia.</h2>
           <p>
-            Tons claros, cinzas suaves e detalhes em verde-oliva conversam bem com a
-            nossa paleta. O mais importante é vocês se sentirem bonitos e à vontade.
+            Verde-oliva representa calma, crescimento e o cuidado que queremos cultivar.
+            Branco traz leveza, paz e a beleza do recomeço. Cinza equilibra a paleta com
+            elegância, firmeza e serenidade.
           </p>
         </div>
         <div class="palette" aria-label="Paleta de cores do casamento">
@@ -266,65 +266,16 @@
         </div>
       </section>
 
-      <section class="section rsvp-section" id="presenca">
-        <div class="rsvp-copy">
-          <p class="eyebrow">Confirmação</p>
-          <h2>Sua presença vai deixar esse dia ainda mais bonito.</h2>
-          <p>
-            Preencha o formulário abaixo. Ele salva sua resposta neste navegador e
-            prepara uma mensagem para envio pelo WhatsApp dos noivos.
-          </p>
-        </div>
-        <form class="rsvp-form" id="rsvpForm">
-          <label>
-            Nome completo
-            <input name="name" type="text" placeholder="Seu nome" required />
-          </label>
-          <label>
-            Número de convidados
-            <input name="guests" type="number" min="1" max="10" value="1" required />
-          </label>
-          <fieldset>
-            <legend>Você vai comparecer?</legend>
-            <label class="radio-row">
-              <input type="radio" name="attendance" value="Sim, vou comemorar com vocês" checked />
-              Sim, vou comemorar com vocês
-            </label>
-            <label class="radio-row">
-              <input type="radio" name="attendance" value="Não poderei comparecer" />
-              Não poderei comparecer
-            </label>
-          </fieldset>
-          <label>
-            Mensagem para os noivos
-            <textarea name="message" rows="4" placeholder="Deixe um carinho para a gente"></textarea>
-          </label>
-          <button class="button primary full" type="submit">Preparar confirmação</button>
-          <p class="form-status" id="formStatus" role="status"></p>
-        </form>
-      </section>
-
       <section class="section gifts-section" id="presentes">
         <div class="section-heading compact">
           <p class="eyebrow">Presentes</p>
           <h2>O carinho de vocês já é o maior presente.</h2>
-          <p>
-            Para quem desejar contribuir com a nossa nova casa ou lua de mel, deixamos
-            algumas opções simples.
-          </p>
+          <p>Para quem desejar contribuir com carinho, deixamos uma opção simples.</p>
         </div>
         <div class="gift-grid">
-          <button class="gift-card" type="button" data-modal-target="modal-casa">
-            <span>Casa nova</span>
-            <strong>Lista de presentes</strong>
-          </button>
-          <button class="gift-card" type="button" data-modal-target="modal-lua">
-            <span>Lua de mel</span>
-            <strong>Cotas de viagem</strong>
-          </button>
-          <button class="gift-card" type="button" data-modal-target="modal-pix">
+          <button class="gift-card pix-bar" type="button" data-modal-target="modal-pix">
             <span>Pix dos noivos</span>
-            <strong>Adicionar chave Pix</strong>
+            <strong>Nossa chave Pix</strong>
           </button>
         </div>
       </section>
@@ -414,58 +365,6 @@
       </section>
     </div>
 
-    <div class="modal-layer" id="modal-casa" role="dialog" aria-modal="true" aria-labelledby="modal-casa-title">
-      <div class="modal-backdrop" data-close-modal></div>
-      <section class="gift-modal" tabindex="-1">
-        <div class="leaf-burst" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
-        <p class="eyebrow">Casa nova</p>
-        <h2 id="modal-casa-title">Lista de presentes</h2>
-        <p>
-          Aqui vocês podem inserir os detalhes da lista, links de lojas, itens preferidos
-          ou instruções para os convidados.
-        </p>
-        <label>
-          Texto personalizado
-          <textarea data-save-field="casa-texto" rows="5" placeholder="Ex.: Link da lista, observações ou agradecimento especial."></textarea>
-        </label>
-        <label class="upload-box">
-          <input type="file" accept="image/*" multiple data-photo-input="casa" />
-          <span>Adicionar fotos da lista ou referências</span>
-        </label>
-        <div class="photo-preview" data-photo-preview="casa"></div>
-        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
-      </section>
-    </div>
-
-    <div class="modal-layer" id="modal-lua" role="dialog" aria-modal="true" aria-labelledby="modal-lua-title">
-      <div class="modal-backdrop" data-close-modal></div>
-      <section class="gift-modal" tabindex="-1">
-        <div class="leaf-burst" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
-        <p class="eyebrow">Lua de mel</p>
-        <h2 id="modal-lua-title">Cotas de viagem</h2>
-        <p>
-          Espaço para descrever cotas simbólicas, passeios, hospedagem, jantar especial
-          ou qualquer carinho para a viagem de vocês.
-        </p>
-        <label>
-          Texto personalizado
-          <textarea data-save-field="lua-texto" rows="5" placeholder="Ex.: Cotas de passeio, hospedagem, restaurante ou experiência."></textarea>
-        </label>
-        <label class="upload-box">
-          <input type="file" accept="image/*" multiple data-photo-input="lua" />
-          <span>Adicionar fotos do destino ou inspirações</span>
-        </label>
-        <div class="photo-preview" data-photo-preview="lua"></div>
-        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
-      </section>
-    </div>
-
     <div class="modal-layer" id="modal-pix" role="dialog" aria-modal="true" aria-labelledby="modal-pix-title">
       <div class="modal-backdrop" data-close-modal></div>
       <section class="gift-modal" tabindex="-1">
@@ -474,10 +373,10 @@
         </div>
         <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
         <p class="eyebrow">Pix dos noivos</p>
-        <h2 id="modal-pix-title">Adicionar chave Pix</h2>
+        <h2 id="modal-pix-title">Nossa chave Pix</h2>
         <p>
-          Use este espaço para colocar a chave Pix, QR Code, instruções e uma mensagem
-          de agradecimento.
+          Este espaço reúne a chave Pix dos noivos, uma imagem de apoio e uma mensagem
+          de agradecimento para quem desejar contribuir com carinho.
         </p>
         <label>
           Texto personalizado
@@ -498,6 +397,6 @@
     </footer>
 
     <div class="click-layer" id="clickLayer" aria-hidden="true"></div>
-    <script src="script.js?v=20260603-04"></script>
+    <script src="script.js?v=20260603-06"></script>
   </body>
 </html>
