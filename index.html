@@ -104,7 +104,7 @@
           <h2>Um amor feito de calma, parceria e planos bonitos.</h2>
         </div>
         <div class="story-grid">
-          <article>
+          <article class="story-card" data-modal-target="modal-encontro" tabindex="0" role="button" aria-label="Abrir detalhes sobre o encontro">
             <span class="story-year">01</span>
             <h3>O encontro</h3>
             <p>
@@ -112,7 +112,7 @@
               mudaram o rumo de tudo. Foi assim que começamos.
             </p>
           </article>
-          <article>
+          <article class="story-card" data-modal-target="modal-pedido" tabindex="0" role="button" aria-label="Abrir detalhes sobre o pedido">
             <span class="story-year">02</span>
             <h3>O pedido</h3>
             <p>
@@ -120,7 +120,7 @@
               construir uma vida inteira lado a lado.
             </p>
           </article>
-          <article>
+          <article class="story-card" data-modal-target="modal-grande-dia" tabindex="0" role="button" aria-label="Abrir detalhes sobre o grande dia">
             <span class="story-year">03</span>
             <h3>O grande dia</h3>
             <p>
@@ -329,6 +329,105 @@
         </div>
       </section>
     </main>
+
+    <div class="modal-layer" id="modal-encontro" role="dialog" aria-modal="true" aria-labelledby="modal-encontro-title">
+      <div class="modal-backdrop" data-close-modal></div>
+      <section class="gift-modal story-modal" tabindex="-1">
+        <div class="leaf-burst" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
+        <div class="story-modal-grid">
+          <div>
+            <p class="eyebrow">Nossa história</p>
+            <h2 id="modal-encontro-title">O encontro</h2>
+            <p>
+              Toda história bonita começa com um detalhe que parecia pequeno. Uma conversa,
+              um olhar mais demorado, uma vontade de continuar perto. Foi assim que o nosso
+              caminho começou a se desenhar.
+            </p>
+            <label>
+              Texto personalizado
+              <textarea data-save-field="historia-encontro-texto" rows="6" placeholder="Escreva aqui mais detalhes sobre esse momento."></textarea>
+            </label>
+          </div>
+          <aside class="story-photo-panel">
+            <label class="upload-box">
+              <input type="file" accept="image/*" multiple data-photo-input="historia-encontro" />
+              <span>Adicionar fotos desse capítulo</span>
+            </label>
+            <div class="photo-preview story-photo-preview" data-photo-preview="historia-encontro"></div>
+          </aside>
+        </div>
+        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="modal-pedido" role="dialog" aria-modal="true" aria-labelledby="modal-pedido-title">
+      <div class="modal-backdrop" data-close-modal></div>
+      <section class="gift-modal story-modal" tabindex="-1">
+        <div class="leaf-burst" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
+        <div class="story-modal-grid">
+          <div>
+            <p class="eyebrow">Nossa história</p>
+            <h2 id="modal-pedido-title">O pedido</h2>
+            <p>
+              O pedido foi um daqueles momentos em que o coração entende antes das palavras.
+              Teve emoção, certeza e a alegria de enxergar uma vida inteira sendo escolhida
+              com carinho.
+            </p>
+            <label>
+              Texto personalizado
+              <textarea data-save-field="historia-pedido-texto" rows="6" placeholder="Conte como foi o pedido, onde aconteceu e o que vocês sentiram."></textarea>
+            </label>
+          </div>
+          <aside class="story-photo-panel">
+            <label class="upload-box">
+              <input type="file" accept="image/*" multiple data-photo-input="historia-pedido" />
+              <span>Adicionar fotos desse capítulo</span>
+            </label>
+            <div class="photo-preview story-photo-preview" data-photo-preview="historia-pedido"></div>
+          </aside>
+        </div>
+        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="modal-grande-dia" role="dialog" aria-modal="true" aria-labelledby="modal-grande-dia-title">
+      <div class="modal-backdrop" data-close-modal></div>
+      <section class="gift-modal story-modal" tabindex="-1">
+        <div class="leaf-burst" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
+        <div class="story-modal-grid">
+          <div>
+            <p class="eyebrow">Nossa história</p>
+            <h2 id="modal-grande-dia-title">O grande dia</h2>
+            <p>
+              Esse será o capítulo em que celebramos tudo o que construímos até aqui.
+              Queremos que cada detalhe tenha a nossa essência e que cada pessoa presente
+              sinta o quanto faz parte dessa alegria.
+            </p>
+            <label>
+              Texto personalizado
+              <textarea data-save-field="historia-grande-dia-texto" rows="6" placeholder="Adicione detalhes especiais sobre a cerimônia, família, padrinhos ou festa."></textarea>
+            </label>
+          </div>
+          <aside class="story-photo-panel">
+            <label class="upload-box">
+              <input type="file" accept="image/*" multiple data-photo-input="historia-grande-dia" />
+              <span>Adicionar fotos desse capítulo</span>
+            </label>
+            <div class="photo-preview story-photo-preview" data-photo-preview="historia-grande-dia"></div>
+          </aside>
+        </div>
+        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
+      </section>
+    </div>
 
     <div class="modal-layer" id="modal-casa" role="dialog" aria-modal="true" aria-labelledby="modal-casa-title">
       <div class="modal-backdrop" data-close-modal></div>

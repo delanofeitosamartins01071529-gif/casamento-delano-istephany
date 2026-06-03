@@ -94,6 +94,12 @@ document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
     if (document.body.classList.contains("admin-editing")) return;
     openModal(document.getElementById(trigger.dataset.modalTarget));
   });
+  trigger.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    if (document.body.classList.contains("admin-editing")) return;
+    openModal(document.getElementById(trigger.dataset.modalTarget));
+  });
 });
 
 document.querySelectorAll("[data-close-modal]").forEach((closer) => {
@@ -122,20 +128,42 @@ document.querySelectorAll("[data-save-modal]").forEach((button) => {
   });
 });
 
-document.querySelectorAll("[data-photo-input]").forEach((input) => {
-  input.addEventListener("change", () => {
-    const preview = document.querySelector(`[data-photo-preview="${input.dataset.photoInput}"]`);
-    if (!preview) return;
-    preview.innerHTML = "";
+function renderPhotoPreview(key, photos) {
+  const preview = document.querySelector(`[data-photo-preview="${key}"]`);
+  if (!preview) return;
+  preview.innerHTML = "";
+  photos.forEach((photo, index) => {
+    const image = document.createElement("img");
+    image.alt = `Foto ${index + 1}`;
+    image.src = photo;
+    preview.appendChild(image);
+  });
+}
 
-    Array.from(input.files || []).forEach((file) => {
-      if (!file.type.startsWith("image/")) return;
-      const image = document.createElement("img");
-      image.alt = file.name;
-      image.src = URL.createObjectURL(file);
-      image.addEventListener("load", () => URL.revokeObjectURL(image.src), { once: true });
-      preview.appendChild(image);
-    });
+document.querySelectorAll("[data-photo-input]").forEach((input) => {
+  const key = input.dataset.photoInput;
+  const storageKey = `casamento-photos-${key}`;
+  const savedPhotos = JSON.parse(localStorage.getItem(storageKey) || "[]");
+  renderPhotoPreview(key, savedPhotos);
+
+  input.addEventListener("change", async () => {
+    const files = Array.from(input.files || []).filter((file) => file.type.startsWith("image/"));
+    if (!files.length) return;
+
+    const photos = await Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.addEventListener("load", () => resolve(String(reader.result)));
+            reader.readAsDataURL(file);
+          })
+      )
+    );
+
+    localStorage.setItem(storageKey, JSON.stringify(photos));
+    renderPhotoPreview(key, photos);
+    input.value = "";
   });
 });
 

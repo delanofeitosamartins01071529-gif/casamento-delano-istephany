@@ -750,6 +750,37 @@ h3 {
   padding: 32px;
 }
 
+.story-card {
+  position: relative;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.story-card::after {
+  content: "Abrir detalhes";
+  position: absolute;
+  right: 22px;
+  bottom: 20px;
+  color: var(--olive);
+  font-size: 0.72rem;
+  font-weight: 800;
+  opacity: 0;
+  text-transform: uppercase;
+  transition: opacity 180ms ease;
+}
+
+.story-card:hover,
+.story-card:focus-visible {
+  border-color: rgba(97, 114, 75, 0.48);
+  box-shadow: 0 28px 80px rgba(38, 47, 32, 0.2);
+  outline: none;
+  transform: translateY(-6px);
+}
+
+.story-card:hover::after,
+.story-card:focus-visible::after {
+  opacity: 1;
+}
+
 .story-year {
   display: block;
   margin-bottom: 38px;
@@ -1244,6 +1275,33 @@ fieldset {
   display: none;
 }
 
+.story-modal {
+  width: min(920px, 100%);
+}
+
+.story-modal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.78fr);
+  gap: clamp(22px, 4vw, 42px);
+  align-items: start;
+}
+
+.story-photo-panel {
+  display: grid;
+  align-content: start;
+  min-height: 100%;
+}
+
+.story-photo-preview {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.story-photo-preview img {
+  aspect-ratio: 4 / 5;
+  border-color: rgba(97, 114, 75, 0.26);
+  box-shadow: 0 16px 42px rgba(38, 47, 32, 0.12);
+}
+
 .leaf-burst {
   position: absolute;
   inset: 0;
@@ -1491,6 +1549,11 @@ fieldset {
   .gift-modal {
     max-height: 92vh;
     padding: 28px 20px;
+  }
+
+  .story-modal-grid,
+  .story-photo-preview {
+    grid-template-columns: 1fr;
   }
 
   .music-widget {
