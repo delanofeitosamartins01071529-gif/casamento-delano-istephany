@@ -1728,6 +1728,7 @@ fieldset {
     0 0 34px rgba(223, 230, 212, 0.56);
   opacity: 0;
   transform: translate(-50%, -50%) rotate(20deg);
+  animation-delay: var(--leaf-delay, 0ms);
 }
 
 .modal-layer.is-open .leaf-burst span,
@@ -1737,7 +1738,8 @@ fieldset {
 
 .modal-layer.is-closing .leaf-burst span,
 .crop-modal.is-closing .leaf-burst span {
-  animation: leafReturn 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  animation: none;
+  opacity: 0;
 }
 
 .leaf-burst span:nth-child(1) {
@@ -1881,32 +1883,14 @@ fieldset {
   }
   18%,
   68% {
-    opacity: 1;
+    opacity: var(--leaf-opacity, 0.9);
   }
   52% {
-    transform: translate(calc(-50% + (var(--x) * 0.62)), calc(-50% + (var(--y) * 0.38) - 34px)) rotate(calc(var(--r) * 0.58)) scale(1.08);
+    transform: translate(calc(-50% + var(--mid-x, 80px)), calc(-50% + var(--mid-y, -40px))) rotate(calc(var(--r) * 0.58)) scale(calc(var(--leaf-scale, 1) + 0.14));
   }
   100% {
     opacity: 0;
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.72);
-  }
-}
-
-@keyframes leafReturn {
-  0% {
-    opacity: 0;
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.78);
-  }
-  22%,
-  72% {
-    opacity: 0.92;
-  }
-  58% {
-    transform: translate(calc(-50% + (var(--x) * 0.36)), calc(-50% + (var(--y) * 0.48) - 24px)) rotate(calc(var(--r) * 0.42)) scale(1.06);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(0deg) scale(0.2);
+    transform: translate(calc(-50% + var(--end-x, 140px)), calc(-50% + var(--end-y, 80px))) rotate(var(--r)) scale(0.68);
   }
 }
 

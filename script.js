@@ -73,6 +73,50 @@ function ensureLeafBurst(modal) {
   while (burst.children.length < 14) {
     burst.appendChild(document.createElement("span"));
   }
+
+  const rect = burst.getBoundingClientRect();
+  const width = Math.max(rect.width, 360);
+  const height = Math.max(rect.height, 260);
+  const leaves = Array.from(burst.children);
+
+  leaves.forEach((leaf, index) => {
+    const side = Math.floor(Math.random() * 4);
+    const edgeOffset = 18;
+    let startX = 0;
+    let startY = 0;
+
+    if (side === 0) {
+      startX = Math.random() * width;
+      startY = edgeOffset;
+    } else if (side === 1) {
+      startX = width - edgeOffset;
+      startY = Math.random() * height;
+    } else if (side === 2) {
+      startX = Math.random() * width;
+      startY = height - edgeOffset;
+    } else {
+      startX = edgeOffset;
+      startY = Math.random() * height;
+    }
+
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const driftX = centerX - startX + (Math.random() - 0.5) * width * 0.72;
+    const driftY = centerY - startY + (Math.random() - 0.5) * height * 0.72;
+    const endX = driftX + (Math.random() - 0.5) * 140;
+    const endY = driftY + (Math.random() - 0.5) * 110;
+
+    leaf.style.left = `${startX}px`;
+    leaf.style.top = `${startY}px`;
+    leaf.style.setProperty("--mid-x", `${driftX * 0.55}px`);
+    leaf.style.setProperty("--mid-y", `${driftY * 0.45 - 34}px`);
+    leaf.style.setProperty("--end-x", `${endX}px`);
+    leaf.style.setProperty("--end-y", `${endY}px`);
+    leaf.style.setProperty("--r", `${Math.round((Math.random() - 0.5) * 420)}deg`);
+    leaf.style.setProperty("--leaf-scale", `${0.78 + Math.random() * 0.36}`);
+    leaf.style.setProperty("--leaf-opacity", `${0.72 + Math.random() * 0.24}`);
+    leaf.style.setProperty("--leaf-delay", `${(index % 5) * 32}ms`);
+  });
 }
 
 function openModal(modal) {
@@ -207,6 +251,7 @@ const fadeTargetVolume = 0.5;
 let fadeTimer = null;
 let autoplayBlocked = false;
 let musicPanelTimer = null;
+const isEmbeddedPreview = window.self !== window.top;
 
 function setMusicHint(text) {
   return text;
@@ -257,7 +302,11 @@ function stopMusic() {
   setMusicHint("Música pausada.");
 }
 
-if (music && musicEnabled && musicVolume) {
+if (isEmbeddedPreview) {
+  music?.pause();
+  music?.removeAttribute("autoplay");
+  if (musicWidget) musicWidget.hidden = true;
+} else if (music && musicEnabled && musicVolume) {
   music.volume = 0;
   musicVolume.value = String(fadeTargetVolume);
   musicEnabled.checked = true;
