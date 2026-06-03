@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modo ADM - Delano & Istephany</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-page">
+    <main class="admin-shell">
+      <section class="admin-sidebar">
+        <a class="admin-back" href="index.html">Voltar ao site</a>
+        <div class="admin-title">
+          <span class="flower-logo large" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow">Modo ADM</p>
+            <h1>Editar site</h1>
+          </div>
+        </div>
+        <p>
+          Ative a edição, clique nos textos do preview e altere o conteúdo. Para fotos,
+          use os campos abaixo; tudo fica salvo neste navegador.
+        </p>
+        <label class="switch-row admin-switch">
+          <span>Editar textos no preview</span>
+          <input id="adminEditMode" type="checkbox" />
+        </label>
+        <button class="button muted full" id="adminClearChanges" type="button">Limpar edições salvas</button>
+        <div class="admin-upload-list" id="adminUploadList"></div>
+      </section>
+      <section class="admin-preview-wrap">
+        <iframe id="sitePreview" title="Preview do site" src="index.html"></iframe>
+      </section>
+    </main>
+    <script src="admin.js"></script>
+  </body>
+</html>
