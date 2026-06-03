@@ -348,19 +348,36 @@ textarea {
   padding: 22px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 220ms ease;
+  transition: opacity 1500ms ease;
 }
 
-.crop-modal.is-open {
+.crop-modal.is-open,
+.crop-modal.is-closing {
   opacity: 1;
   pointer-events: auto;
+}
+
+.crop-modal.is-closing {
+  pointer-events: none;
 }
 
 .crop-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(18, 26, 15, 0.62);
-  backdrop-filter: blur(10px);
+  opacity: 0;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(248, 247, 241, 0.34), transparent 28%),
+    radial-gradient(circle at 78% 72%, rgba(223, 230, 212, 0.22), transparent 34%),
+    rgba(18, 26, 15, 0.62);
+  backdrop-filter: blur(12px);
+}
+
+.crop-modal.is-open .crop-backdrop {
+  animation: backdropIn 1500ms ease forwards;
+}
+
+.crop-modal.is-closing .crop-backdrop {
+  animation: backdropOut 1500ms ease forwards;
 }
 
 .crop-panel {
@@ -374,6 +391,16 @@ textarea {
   border: 1px solid rgba(255, 255, 255, 0.6);
   background: rgba(251, 250, 246, 0.98);
   box-shadow: 0 34px 100px rgba(14, 20, 12, 0.34);
+  opacity: 0;
+  transform: translateY(22px) scale(0.96);
+}
+
+.crop-modal.is-open .crop-panel {
+  animation: modalBloom 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.crop-modal.is-closing .crop-panel {
+  animation: modalFold 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
 }
 
 .crop-panel-head {
@@ -493,6 +520,8 @@ body.admin-editing textarea[data-save-field] {
 }
 
 .music-panel {
+  position: relative;
+  overflow: hidden;
   width: min(320px, calc(100vw - 32px));
   padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.52);
@@ -501,14 +530,71 @@ body.admin-editing textarea[data-save-field] {
   backdrop-filter: blur(14px);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(8px) scale(0.98);
-  transition: opacity 220ms ease, transform 220ms ease;
+  transform: translateY(12px) scale(0.96);
+  transition: opacity 1500ms ease, transform 1500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.music-panel::before,
+.music-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.music-panel::before {
+  inset: -30%;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(255, 255, 255, 0.78), transparent 12%),
+    radial-gradient(circle at 80% 74%, rgba(223, 230, 212, 0.52), transparent 18%);
+  filter: blur(14px);
+}
+
+.music-panel::after {
+  right: 18px;
+  top: 18px;
+  width: 14px;
+  height: 24px;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(135deg, #61724b, #dfe6d4);
+  box-shadow:
+    -72px 32px 0 -2px rgba(97, 114, 75, 0.42),
+    -34px 76px 0 -3px rgba(223, 230, 212, 0.78),
+    -114px 104px 0 -4px rgba(97, 114, 75, 0.34),
+    0 0 22px rgba(255, 255, 255, 0.9);
+  transform: translateY(18px) rotate(20deg);
+}
+
+.music-widget.is-open .music-panel,
+.music-widget.is-closing .music-panel {
+  pointer-events: auto;
 }
 
 .music-widget.is-open .music-panel {
   opacity: 1;
-  pointer-events: auto;
   transform: translateY(0) scale(1);
+}
+
+.music-widget.is-closing .music-panel {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.96);
+}
+
+.music-widget.is-open .music-panel::before {
+  animation: luminousVeil 1500ms ease forwards;
+}
+
+.music-widget.is-open .music-panel::after {
+  animation: musicLeaves 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.music-widget.is-closing .music-panel::before {
+  animation: luminousFade 1500ms ease forwards;
+}
+
+.music-widget.is-closing .music-panel::after {
+  animation: musicLeavesClose 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
 }
 
 .music-panel-head {
@@ -1246,7 +1332,7 @@ fieldset {
   padding: 22px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 360ms ease;
+  transition: opacity 1500ms ease;
 }
 
 .modal-layer.is-open,
@@ -1260,15 +1346,72 @@ fieldset {
 
 .modal-layer.is-closing {
   opacity: 1;
+  pointer-events: none;
 }
 
 .modal-backdrop {
   position: absolute;
   inset: 0;
+  opacity: 0;
   background:
-    radial-gradient(circle at 25% 18%, rgba(223, 230, 212, 0.22), transparent 32%),
+    radial-gradient(circle at 20% 18%, rgba(248, 247, 241, 0.34), transparent 26%),
+    radial-gradient(circle at 82% 72%, rgba(223, 230, 212, 0.24), transparent 34%),
+    radial-gradient(circle at 48% 46%, rgba(255, 255, 255, 0.14), transparent 24%),
     rgba(18, 26, 15, 0.62);
   backdrop-filter: blur(12px);
+}
+
+.modal-layer::before,
+.modal-layer::after,
+.crop-modal::before,
+.crop-modal::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.58), transparent 12%),
+    radial-gradient(circle at 28% 36%, rgba(223, 230, 212, 0.46), transparent 18%),
+    radial-gradient(circle at 72% 64%, rgba(248, 247, 241, 0.5), transparent 18%);
+  filter: blur(18px);
+  mix-blend-mode: screen;
+}
+
+.modal-layer::after,
+.crop-modal::after {
+  inset: 22%;
+  transform: rotate(18deg);
+  background:
+    radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.72), transparent 7%),
+    radial-gradient(circle at 72% 22%, rgba(255, 255, 255, 0.6), transparent 6%),
+    radial-gradient(circle at 50% 76%, rgba(223, 230, 212, 0.48), transparent 9%);
+}
+
+.modal-layer.is-open::before,
+.crop-modal.is-open::before {
+  animation: luminousVeil 1500ms ease forwards;
+}
+
+.modal-layer.is-open::after,
+.crop-modal.is-open::after {
+  animation: sparkleVeil 1500ms ease forwards;
+}
+
+.modal-layer.is-closing::before,
+.crop-modal.is-closing::before,
+.modal-layer.is-closing::after,
+.crop-modal.is-closing::after {
+  animation: luminousFade 1500ms ease forwards;
+}
+
+.modal-layer.is-open .modal-backdrop {
+  animation: backdropIn 1500ms ease forwards;
+}
+
+.modal-layer.is-closing .modal-backdrop {
+  animation: backdropOut 1500ms ease forwards;
 }
 
 .gift-modal {
@@ -1282,15 +1425,16 @@ fieldset {
     linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 247, 241, 0.94)),
     radial-gradient(circle at 92% 10%, rgba(97, 114, 75, 0.12), transparent 30%);
   box-shadow: 0 34px 100px rgba(14, 20, 12, 0.34);
+  opacity: 0;
   transform: translateY(22px) scale(0.96);
 }
 
 .modal-layer.is-open .gift-modal {
-  animation: modalBloom 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalBloom 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .modal-layer.is-closing .gift-modal {
-  animation: modalFold 360ms ease forwards;
+  animation: modalFold 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
 }
 
 .modal-close {
@@ -1398,66 +1542,141 @@ fieldset {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 16px;
-  height: 28px;
+  width: clamp(10px, 1.2vw, 17px);
+  height: clamp(18px, 2vw, 30px);
   border-radius: 100% 0 100% 0;
-  background: linear-gradient(135deg, #87956d, #dfe6d4);
-  box-shadow: 0 0 18px rgba(248, 247, 241, 0.9);
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.82), transparent 24%),
+    linear-gradient(135deg, #61724b, #dfe6d4);
+  box-shadow:
+    0 0 18px rgba(248, 247, 241, 0.92),
+    0 0 34px rgba(223, 230, 212, 0.56);
   opacity: 0;
   transform: translate(-50%, -50%) rotate(20deg);
 }
 
-.modal-layer.is-open .leaf-burst span {
-  animation: leafScatter 940ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.modal-layer.is-open .leaf-burst span,
+.crop-modal.is-open .leaf-burst span {
+  animation: leafScatter 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.modal-layer.is-closing .leaf-burst span {
-  animation: leafReturn 420ms ease forwards;
+.modal-layer.is-closing .leaf-burst span,
+.crop-modal.is-closing .leaf-burst span {
+  animation: leafReturn 1500ms cubic-bezier(0.7, 0, 0.3, 1) forwards;
 }
 
 .leaf-burst span:nth-child(1) {
   --x: -260px;
   --y: -170px;
   --r: -62deg;
+  --d: 0ms;
 }
 
 .leaf-burst span:nth-child(2) {
   --x: 250px;
   --y: -150px;
   --r: 78deg;
+  --d: 90ms;
 }
 
 .leaf-burst span:nth-child(3) {
   --x: -230px;
   --y: 150px;
   --r: 34deg;
+  --d: 140ms;
 }
 
 .leaf-burst span:nth-child(4) {
   --x: 260px;
   --y: 160px;
   --r: -30deg;
+  --d: 40ms;
 }
 
 .leaf-burst span:nth-child(5) {
   --x: -80px;
   --y: -230px;
   --r: 120deg;
+  --d: 180ms;
 }
 
 .leaf-burst span:nth-child(6) {
   --x: 90px;
   --y: 230px;
   --r: -130deg;
+  --d: 70ms;
+}
+
+.leaf-burst span:nth-child(7) {
+  --x: -360px;
+  --y: 20px;
+  --r: 210deg;
+  --d: 230ms;
+}
+
+.leaf-burst span:nth-child(8) {
+  --x: 350px;
+  --y: -20px;
+  --r: -220deg;
+  --d: 160ms;
+}
+
+.leaf-burst span:nth-child(9) {
+  --x: -150px;
+  --y: 260px;
+  --r: 270deg;
+  --d: 260ms;
+}
+
+.leaf-burst span:nth-child(10) {
+  --x: 170px;
+  --y: -270px;
+  --r: -260deg;
+  --d: 120ms;
+}
+
+.leaf-burst span:nth-child(11) {
+  --x: -320px;
+  --y: -260px;
+  --r: 155deg;
+  --d: 300ms;
+}
+
+.leaf-burst span:nth-child(12) {
+  --x: 330px;
+  --y: 250px;
+  --r: -145deg;
+  --d: 210ms;
+}
+
+.leaf-burst span:nth-child(13) {
+  --x: -30px;
+  --y: 310px;
+  --r: 95deg;
+  --d: 330ms;
+}
+
+.leaf-burst span:nth-child(14) {
+  --x: 30px;
+  --y: -315px;
+  --r: -95deg;
+  --d: 280ms;
 }
 
 @keyframes modalBloom {
   0% {
     opacity: 0;
-    transform: translateY(22px) scale(0.96);
+    filter: blur(10px) brightness(1.18);
+    transform: translateY(28px) scale(0.94);
+  }
+  42% {
+    opacity: 1;
+    filter: blur(1px) brightness(1.06);
+    transform: translateY(-4px) scale(1.012);
   }
   100% {
     opacity: 1;
+    filter: blur(0) brightness(1);
     transform: translateY(0) scale(1);
   }
 }
@@ -1465,36 +1684,149 @@ fieldset {
 @keyframes modalFold {
   0% {
     opacity: 1;
+    filter: blur(0) brightness(1);
     transform: translateY(0) scale(1);
+  }
+  36% {
+    opacity: 1;
+    filter: blur(1px) brightness(1.08);
+    transform: translateY(-4px) scale(1.01);
   }
   100% {
     opacity: 0;
-    transform: translateY(18px) scale(0.97);
+    filter: blur(12px) brightness(1.18);
+    transform: translateY(26px) scale(0.94);
   }
 }
 
 @keyframes leafScatter {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.24);
   }
-  18% {
+  18%,
+  68% {
     opacity: 1;
+  }
+  52% {
+    transform: translate(calc(-50% + (var(--x) * 0.62)), calc(-50% + (var(--y) * 0.38) - 34px)) rotate(calc(var(--r) * 0.58)) scale(1.08);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(1);
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.72);
   }
 }
 
 @keyframes leafReturn {
   0% {
-    opacity: 0.8;
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(1);
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(0.78);
+  }
+  22%,
+  72% {
+    opacity: 0.92;
+  }
+  58% {
+    transform: translate(calc(-50% + (var(--x) * 0.36)), calc(-50% + (var(--y) * 0.48) - 24px)) rotate(calc(var(--r) * 0.42)) scale(1.06);
   }
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) rotate(0deg) scale(0.2);
+  }
+}
+
+@keyframes luminousVeil {
+  0% {
+    opacity: 0;
+    transform: scale(0.72) rotate(-8deg);
+  }
+  38% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18) rotate(10deg);
+  }
+}
+
+@keyframes sparkleVeil {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(18deg);
+  }
+  24%,
+  62% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35) rotate(-18deg);
+  }
+}
+
+@keyframes luminousFade {
+  0% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  42% {
+    opacity: 0.72;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+}
+
+@keyframes backdropIn {
+  0% {
+    opacity: 0;
+    filter: brightness(1.18);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes backdropOut {
+  0% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(1.18);
+  }
+}
+
+@keyframes musicLeaves {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) rotate(20deg) scale(0.65);
+  }
+  24%,
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-78px, -82px) rotate(-80deg) scale(0.9);
+  }
+}
+
+@keyframes musicLeavesClose {
+  0% {
+    opacity: 0;
+    transform: translate(-78px, -82px) rotate(-80deg) scale(0.9);
+  }
+  28%,
+  72% {
+    opacity: 0.82;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(18px) rotate(20deg) scale(0.55);
   }
 }
 

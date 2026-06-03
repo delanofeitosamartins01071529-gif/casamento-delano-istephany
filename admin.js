@@ -50,9 +50,11 @@ const editableSelectors = [
 let editableElements = [];
 let saveFieldElements = [];
 let cropState = null;
+let cropCloseTimer = null;
 const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
 const pendingPhotos = new Map();
+const modalAnimationDuration = 1500;
 
 function getEditDocument() {
   return editPreview.contentDocument || editPreview.contentWindow.document;
@@ -159,6 +161,7 @@ function drawCrop() {
 function openCropEditor(slot, dataUrl) {
   const image = new Image();
   image.addEventListener("load", () => {
+    window.clearTimeout(cropCloseTimer);
     const frameInfo = getFrameInfo(slot);
     sizeCropCanvas(frameInfo.aspect);
     cropCanvas.style.setProperty("--crop-angle", `${frameInfo.angle}deg`);
@@ -174,6 +177,7 @@ function openCropEditor(slot, dataUrl) {
       lastY: 0,
     };
     drawCrop();
+    cropModal.classList.remove("is-closing");
     cropModal.classList.add("is-open");
     cropModal.setAttribute("aria-hidden", "false");
   });
@@ -181,9 +185,15 @@ function openCropEditor(slot, dataUrl) {
 }
 
 function closeCropEditor() {
+  if (cropModal.classList.contains("is-closing")) return;
+  window.clearTimeout(cropCloseTimer);
   cropModal.classList.remove("is-open");
-  cropModal.setAttribute("aria-hidden", "true");
-  cropState = null;
+  cropModal.classList.add("is-closing");
+  cropCloseTimer = window.setTimeout(() => {
+    cropModal.classList.remove("is-closing");
+    cropModal.setAttribute("aria-hidden", "true");
+    cropState = null;
+  }, modalAnimationDuration);
 }
 
 function applyPendingPhoto(slot, dataUrl) {

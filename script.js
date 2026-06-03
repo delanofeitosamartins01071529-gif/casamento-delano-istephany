@@ -65,9 +65,19 @@ if (saved && form) {
 
 let activeModal = null;
 let lastFocusedElement = null;
+const modalAnimationDuration = 1500;
+
+function ensureLeafBurst(modal) {
+  const burst = modal?.querySelector(".leaf-burst");
+  if (!burst) return;
+  while (burst.children.length < 14) {
+    burst.appendChild(document.createElement("span"));
+  }
+}
 
 function openModal(modal) {
   if (!modal) return;
+  ensureLeafBurst(modal);
   lastFocusedElement = document.activeElement;
   activeModal = modal;
   modal.classList.remove("is-closing");
@@ -86,7 +96,7 @@ function closeModal(modal = activeModal) {
     if (activeModal === modal) activeModal = null;
     document.body.classList.remove("modal-active");
     lastFocusedElement?.focus?.({ preventScroll: true });
-  }, 420);
+  }, modalAnimationDuration);
 }
 
 document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
@@ -188,9 +198,10 @@ const musicPanelToggle = document.getElementById("musicPanelToggle");
 const musicEnabled = document.getElementById("musicEnabled");
 const musicVolume = document.getElementById("musicVolume");
 const musicState = document.getElementById("musicState");
-const fadeTargetVolume = Number(localStorage.getItem("wedding-music-volume") || musicVolume?.value || 0.72);
+const fadeTargetVolume = 0.5;
 let fadeTimer = null;
 let autoplayBlocked = false;
+let musicPanelTimer = null;
 
 function setMusicHint(text) {
   return text;
@@ -256,8 +267,21 @@ if (music && musicEnabled && musicVolume) {
   );
 
   musicPanelToggle?.addEventListener("click", () => {
-    const isOpen = musicWidget?.classList.toggle("is-open");
-    musicPanelToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+    if (!musicWidget) return;
+    window.clearTimeout(musicPanelTimer);
+    if (musicWidget.classList.contains("is-open")) {
+      musicWidget.classList.remove("is-open");
+      musicWidget.classList.add("is-closing");
+      musicPanelToggle.setAttribute("aria-expanded", "false");
+      musicPanelTimer = window.setTimeout(() => {
+        musicWidget.classList.remove("is-closing");
+      }, 1500);
+      return;
+    }
+
+    musicWidget.classList.remove("is-closing");
+    musicWidget.classList.add("is-open");
+    musicPanelToggle.setAttribute("aria-expanded", "true");
   });
 
   musicEnabled.addEventListener("change", () => {
@@ -267,7 +291,6 @@ if (music && musicEnabled && musicVolume) {
 
   musicVolume.addEventListener("input", () => {
     const value = Number(musicVolume.value);
-    localStorage.setItem("wedding-music-volume", String(value));
     if (!music.paused) music.volume = value;
   });
 
