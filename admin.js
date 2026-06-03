@@ -7,6 +7,8 @@ const adminUser = document.getElementById("adminUser");
 const adminPassword = document.getElementById("adminPassword");
 const logoutButton = document.getElementById("adminLogout");
 const editToggle = document.getElementById("adminEditMode");
+const saveAllButton = document.getElementById("adminSaveAll");
+const saveStatus = document.getElementById("adminSaveStatus");
 const clearButton = document.getElementById("adminClearChanges");
 const uploadList = document.getElementById("adminUploadList");
 const cropModal = document.getElementById("cropModal");
@@ -68,6 +70,9 @@ let editableElements = [];
 let cropState = null;
 const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
+const pendingText = new Map();
+const pendingPhotos = new Map();
+const pendingPhotoCollections = new Map();
 
 function unlockAdmin() {
   login.classList.add("is-hidden");
@@ -95,10 +100,49 @@ function collectEditableElements() {
   editableElements.forEach((element, index) => {
     const key = `wedding-admin-text-${index}`;
     element.dataset.adminKey = key;
-    const savedText = localStorage.getItem(key);
+    const savedText = pendingText.get(key) ?? localStorage.getItem(key);
     if (savedText !== null) element.textContent = savedText;
-    element.addEventListener("input", () => localStorage.setItem(key, element.textContent.trim()));
+    element.addEventListener("input", () => {
+      pendingText.set(key, element.textContent.trim());
+      markPending();
+    });
   });
+
+  doc.querySelectorAll("[data-save-field]").forEach((field) => {
+    const key = `casamento-${field.dataset.saveField}`;
+    field.value = pendingText.get(key) ?? localStorage.getItem(key) ?? "";
+    field.addEventListener("input", () => {
+      pendingText.set(key, field.value);
+      markPending();
+    });
+  });
+
+  doc.querySelectorAll("[data-photo-input]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const key = input.dataset.photoInput;
+      const storageKey = `casamento-photos-${key}`;
+      const files = Array.from(input.files || []).filter((file) => file.type.startsWith("image/"));
+      if (!files.length) return;
+
+      const photos = await Promise.all(
+        files.map(
+          (file) =>
+            new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.addEventListener("load", () => resolve(String(reader.result)));
+              reader.readAsDataURL(file);
+            })
+        )
+      );
+
+      pendingPhotoCollections.set(storageKey, JSON.stringify(photos));
+      markPending();
+    });
+  });
+}
+
+function markPending() {
+  if (saveStatus) saveStatus.textContent = "Há alterações não salvas.";
 }
 
 function setEditMode(enabled) {
@@ -203,6 +247,26 @@ function renderUploads() {
   });
 }
 
+function applyPendingPhoto(slot, dataUrl) {
+  const doc = getPreviewDocument();
+  const frame = doc.querySelector(`[data-photo-slot="${slot}"]`);
+  const frameImage = frame?.querySelector("img");
+  if (frame && frameImage) {
+    frameImage.src = dataUrl;
+    frame.classList.add("has-image");
+    return;
+  }
+
+  const previewBox = doc.querySelector(`[data-photo-preview="${slot}"]`);
+  if (previewBox) {
+    previewBox.innerHTML = "";
+    const image = doc.createElement("img");
+    image.alt = "Foto enviada";
+    image.src = dataUrl;
+    previewBox.appendChild(image);
+  }
+}
+
 cropZoom.addEventListener("input", () => {
   if (!cropState) return;
   cropState.zoom = Number(cropZoom.value);
@@ -234,8 +298,10 @@ cropCanvas.addEventListener("pointerup", () => {
 
 cropSave.addEventListener("click", () => {
   if (!cropState) return;
-  localStorage.setItem(`wedding-admin-photo-${cropState.slot}`, cropCanvas.toDataURL("image/jpeg", 0.92));
-  preview.contentWindow.location.reload();
+  const dataUrl = cropCanvas.toDataURL("image/jpeg", 0.92);
+  pendingPhotos.set(cropState.slot, dataUrl);
+  applyPendingPhoto(cropState.slot, dataUrl);
+  markPending();
   closeCropEditor();
 });
 
@@ -261,6 +327,17 @@ loginForm.addEventListener("submit", (event) => {
 logoutButton.addEventListener("click", lockAdmin);
 
 editToggle.addEventListener("change", () => setEditMode(editToggle.checked));
+
+saveAllButton.addEventListener("click", () => {
+  pendingText.forEach((value, key) => localStorage.setItem(key, value));
+  pendingPhotos.forEach((value, slot) => localStorage.setItem(`wedding-admin-photo-${slot}`, value));
+  pendingPhotoCollections.forEach((value, key) => localStorage.setItem(key, value));
+  pendingText.clear();
+  pendingPhotos.clear();
+  pendingPhotoCollections.clear();
+  saveStatus.textContent = "Todas as alterações foram salvas.";
+  preview.contentWindow.location.reload();
+});
 
 clearButton.addEventListener("click", () => {
   Object.keys(localStorage).forEach((key) => {

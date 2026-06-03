@@ -115,7 +115,6 @@ document.addEventListener("keydown", (event) => {
 document.querySelectorAll("[data-save-field]").forEach((field) => {
   const key = `casamento-${field.dataset.saveField}`;
   field.value = localStorage.getItem(key) || "";
-  field.addEventListener("input", () => localStorage.setItem(key, field.value));
 });
 
 document.querySelectorAll("[data-save-modal]").forEach((button) => {
@@ -161,7 +160,6 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
       )
     );
 
-    localStorage.setItem(storageKey, JSON.stringify(photos));
     renderPhotoPreview(key, photos);
     input.value = "";
   });

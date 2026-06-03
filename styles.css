@@ -410,6 +410,24 @@ body.admin-editing [data-admin-key] {
   outline-offset: 5px;
 }
 
+[data-save-field],
+[data-save-modal],
+.gift-modal .upload-box,
+.gift-modal label:has([data-save-field]) {
+  display: none;
+}
+
+body.admin-editing [data-save-field],
+body.admin-editing [data-save-modal],
+body.admin-editing .gift-modal .upload-box,
+body.admin-editing .gift-modal label:has([data-save-field]) {
+  display: grid;
+}
+
+body.admin-editing textarea[data-save-field] {
+  display: block;
+}
+
 .music-widget {
   position: fixed;
   right: clamp(16px, 3vw, 32px);
