@@ -414,18 +414,18 @@ body.admin-editing [data-admin-key] {
 [data-save-modal],
 .gift-modal .upload-box,
 .gift-modal label:has([data-save-field]) {
-  display: none;
+  display: none !important;
 }
 
 body.admin-editing [data-save-field],
 body.admin-editing [data-save-modal],
 body.admin-editing .gift-modal .upload-box,
 body.admin-editing .gift-modal label:has([data-save-field]) {
-  display: grid;
+  display: grid !important;
 }
 
 body.admin-editing textarea[data-save-field] {
-  display: block;
+  display: block !important;
 }
 
 .music-widget {

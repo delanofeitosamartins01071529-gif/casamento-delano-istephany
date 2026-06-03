@@ -91,13 +91,11 @@ function closeModal(modal = activeModal) {
 
 document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
   trigger.addEventListener("click", () => {
-    if (document.body.classList.contains("admin-editing")) return;
     openModal(document.getElementById(trigger.dataset.modalTarget));
   });
   trigger.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
-    if (document.body.classList.contains("admin-editing")) return;
     openModal(document.getElementById(trigger.dataset.modalTarget));
   });
 });
@@ -165,7 +163,7 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   });
 });
 
-["historia-encontro", "historia-pedido", "historia-grande-dia"].forEach((slot) => {
+["historia-encontro", "historia-pedido", "historia-grande-dia", "casa", "lua", "pix"].forEach((slot) => {
   const photo = localStorage.getItem(`wedding-admin-photo-${slot}`);
   renderPhotoPreview(slot, photo ? [photo] : []);
 });
