@@ -140,10 +140,15 @@ function renderPhotoPreview(key, photos) {
   if (!preview) return;
   preview.innerHTML = "";
   photos.forEach((photo, index) => {
+    const print = document.createElement("figure");
+    const clip = document.createElement("span");
     const image = document.createElement("img");
+    print.className = "photo-print";
+    clip.className = "photo-clip";
     image.alt = `Foto ${index + 1}`;
     image.src = photo;
-    preview.appendChild(image);
+    print.append(clip, image);
+    preview.appendChild(print);
   });
 }
 

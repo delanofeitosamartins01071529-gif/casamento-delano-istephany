@@ -209,10 +209,15 @@ function applyPendingPhoto(slot, dataUrl) {
   const previewBox = doc.querySelector(`[data-photo-preview="${slot}"]`);
   if (previewBox) {
     previewBox.innerHTML = "";
+    const print = doc.createElement("figure");
+    const clip = doc.createElement("span");
     const image = doc.createElement("img");
+    print.className = "photo-print";
+    clip.className = "photo-clip";
     image.alt = "Foto enviada";
     image.src = dataUrl;
-    previewBox.appendChild(image);
+    print.append(clip, image);
+    previewBox.appendChild(print);
   }
 }
 
