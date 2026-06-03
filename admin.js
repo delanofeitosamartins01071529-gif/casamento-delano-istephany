@@ -1,4 +1,11 @@
 const preview = document.getElementById("sitePreview");
+const login = document.getElementById("adminLogin");
+const shell = document.getElementById("adminShell");
+const loginForm = document.getElementById("adminLoginForm");
+const loginStatus = document.getElementById("adminLoginStatus");
+const adminUser = document.getElementById("adminUser");
+const adminPassword = document.getElementById("adminPassword");
+const logoutButton = document.getElementById("adminLogout");
 const editToggle = document.getElementById("adminEditMode");
 const clearButton = document.getElementById("adminClearChanges");
 const uploadList = document.getElementById("adminUploadList");
@@ -39,6 +46,9 @@ const editableSelectors = [
 ];
 
 const photoSlots = [
+  ["historia-encontro", "História - O encontro"],
+  ["historia-pedido", "História - O pedido"],
+  ["historia-grande-dia", "História - O grande dia"],
   ["memoria-01", "Quadro 01"],
   ["memoria-02", "Quadro 02"],
   ["memoria-03", "Quadro 03"],
@@ -57,6 +67,23 @@ const photoSlots = [
 let editableElements = [];
 let cropState = null;
 const cropContext = cropCanvas.getContext("2d");
+const authKey = "wedding-admin-authenticated";
+
+function unlockAdmin() {
+  login.classList.add("is-hidden");
+  shell.classList.remove("is-locked");
+  sessionStorage.setItem(authKey, "true");
+  preview.src = "index.html";
+}
+
+function lockAdmin() {
+  shell.classList.add("is-locked");
+  login.classList.remove("is-hidden");
+  sessionStorage.removeItem(authKey);
+  preview.removeAttribute("src");
+  adminPassword.value = "";
+  adminUser.focus();
+}
 
 function getPreviewDocument() {
   return preview.contentDocument || preview.contentWindow.document;
@@ -221,6 +248,18 @@ preview.addEventListener("load", () => {
   setEditMode(editToggle.checked);
 });
 
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (adminUser.value.trim() === "davi" && adminPassword.value === "isadora") {
+    loginStatus.textContent = "";
+    unlockAdmin();
+    return;
+  }
+  loginStatus.textContent = "Usuário ou senha incorretos.";
+});
+
+logoutButton.addEventListener("click", lockAdmin);
+
 editToggle.addEventListener("change", () => setEditMode(editToggle.checked));
 
 clearButton.addEventListener("click", () => {
@@ -231,3 +270,9 @@ clearButton.addEventListener("click", () => {
 });
 
 renderUploads();
+
+if (sessionStorage.getItem(authKey) === "true") {
+  unlockAdmin();
+} else {
+  lockAdmin();
+}

@@ -13,7 +13,24 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="admin-page">
-    <main class="admin-shell">
+    <section class="admin-login" id="adminLogin">
+      <form class="admin-login-card" id="adminLoginForm">
+        <span class="flower-logo large" aria-hidden="true"></span>
+        <p class="eyebrow">Acesso restrito</p>
+        <h1>Modo ADM</h1>
+        <label>
+          Usuário
+          <input id="adminUser" type="text" autocomplete="username" required />
+        </label>
+        <label>
+          Senha
+          <input id="adminPassword" type="password" autocomplete="current-password" required />
+        </label>
+        <button class="button primary full" type="submit">Entrar</button>
+        <p class="form-status" id="adminLoginStatus" role="status"></p>
+      </form>
+    </section>
+    <main class="admin-shell is-locked" id="adminShell">
       <section class="admin-sidebar">
         <a class="admin-back" href="index.html">Voltar ao site</a>
         <div class="admin-title">
@@ -27,6 +44,7 @@
           Ative a edição, clique nos textos do preview e altere o conteúdo. Para fotos,
           use os campos abaixo; tudo fica salvo neste navegador.
         </p>
+        <button class="button muted full" id="adminLogout" type="button">Sair do modo ADM</button>
         <label class="switch-row admin-switch">
           <span>Editar textos no preview</span>
           <input id="adminEditMode" type="checkbox" />
@@ -35,7 +53,7 @@
         <div class="admin-upload-list" id="adminUploadList"></div>
       </section>
       <section class="admin-preview-wrap">
-        <iframe id="sitePreview" title="Preview do site" src="index.html"></iframe>
+        <iframe id="sitePreview" title="Preview do site"></iframe>
       </section>
     </main>
     <div class="crop-modal" id="cropModal" aria-hidden="true">

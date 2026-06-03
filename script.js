@@ -167,6 +167,11 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   });
 });
 
+["historia-encontro", "historia-pedido", "historia-grande-dia"].forEach((slot) => {
+  const photo = localStorage.getItem(`wedding-admin-photo-${slot}`);
+  renderPhotoPreview(slot, photo ? [photo] : []);
+});
+
 const music = document.getElementById("weddingMusic");
 const musicWidget = document.querySelector(".music-widget");
 const musicPanelToggle = document.getElementById("musicPanelToggle");
