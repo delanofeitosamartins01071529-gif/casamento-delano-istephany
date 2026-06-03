@@ -137,11 +137,20 @@ function renderPhotoPreview(key, photos) {
   });
 }
 
+function getStoredPhotos(key) {
+  const photos = [];
+  const adminPhoto = localStorage.getItem(`wedding-admin-photo-${key}`);
+  const collection = JSON.parse(localStorage.getItem(`casamento-photos-${key}`) || "[]");
+
+  if (adminPhoto) photos.push(adminPhoto);
+  if (Array.isArray(collection)) photos.push(...collection.filter(Boolean));
+
+  return photos;
+}
+
 document.querySelectorAll("[data-photo-input]").forEach((input) => {
   const key = input.dataset.photoInput;
-  const storageKey = `casamento-photos-${key}`;
-  const savedPhotos = JSON.parse(localStorage.getItem(storageKey) || "[]");
-  renderPhotoPreview(key, savedPhotos);
+  renderPhotoPreview(key, getStoredPhotos(key));
 
   input.addEventListener("change", async () => {
     const files = Array.from(input.files || []).filter((file) => file.type.startsWith("image/"));
@@ -163,10 +172,14 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   });
 });
 
-["historia-encontro", "historia-pedido", "historia-grande-dia", "casa", "lua", "pix"].forEach((slot) => {
-  const photo = localStorage.getItem(`wedding-admin-photo-${slot}`);
-  renderPhotoPreview(slot, photo ? [photo] : []);
-});
+[
+  "historia-encontro",
+  "historia-pedido",
+  "historia-grande-dia",
+  "casa",
+  "lua",
+  "pix",
+].forEach((slot) => renderPhotoPreview(slot, getStoredPhotos(slot)));
 
 const music = document.getElementById("weddingMusic");
 const musicWidget = document.querySelector(".music-widget");
