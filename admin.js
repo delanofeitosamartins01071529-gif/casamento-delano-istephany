@@ -10,7 +10,6 @@ const logoutButton = document.getElementById("adminLogout");
 const saveAllButton = document.getElementById("adminSaveAll");
 const saveStatus = document.getElementById("adminSaveStatus");
 const clearButton = document.getElementById("adminClearChanges");
-const uploadList = document.getElementById("adminUploadList");
 const cropModal = document.getElementById("cropModal");
 const cropCanvas = document.getElementById("cropCanvas");
 const cropZoom = document.getElementById("cropZoom");
@@ -44,29 +43,8 @@ const editableSelectors = [
   ".gift-modal h2",
   ".gift-modal p",
   ".memory-copy h2",
+  ".memory-frame figcaption",
   ".site-footer p",
-];
-
-const photoSlots = [
-  ["historia-encontro", "História - O encontro"],
-  ["historia-pedido", "História - O pedido"],
-  ["historia-grande-dia", "História - O grande dia"],
-  ["casa", "Presentes - Casa nova"],
-  ["lua", "Presentes - Lua de mel"],
-  ["pix", "Presentes - Pix"],
-  ["memoria-01", "Quadro 01"],
-  ["memoria-02", "Quadro 02"],
-  ["memoria-03", "Quadro 03"],
-  ["memoria-04", "Quadro 04"],
-  ["memoria-05", "Quadro 05"],
-  ["memoria-06", "Quadro 06"],
-  ["memoria-07", "Quadro 07"],
-  ["memoria-08", "Quadro 08"],
-  ["memoria-09", "Quadro 09"],
-  ["memoria-10", "Quadro 10"],
-  ["memoria-11", "Quadro 11"],
-  ["memoria-12", "Quadro 12"],
-  ["memoria-14", "Quadro 13"],
 ];
 
 let editableElements = [];
@@ -75,7 +53,6 @@ let cropState = null;
 const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
 const pendingPhotos = new Map();
-const pendingPhotoCollections = new Map();
 
 function getEditDocument() {
   return editPreview.contentDocument || editPreview.contentWindow.document;
@@ -111,6 +88,7 @@ function collectEditableElements() {
   const doc = getEditDocument();
   editableElements = editableSelectors.flatMap((selector) => Array.from(doc.querySelectorAll(selector)));
   saveFieldElements = Array.from(doc.querySelectorAll("[data-save-field]"));
+  doc.body.classList.add("admin-editing");
 
   editableElements.forEach((element, index) => {
     const key = `wedding-admin-text-${index}`;
@@ -128,14 +106,17 @@ function collectEditableElements() {
     field.addEventListener("input", markPending);
   });
 
-  doc.body.classList.add("admin-editing");
+  bindInlinePhotoUploads(doc);
 }
 
 function getFrameInfo(slot) {
-  const frame = getEditDocument().querySelector(`[data-photo-slot="${slot}"]`);
-  if (!frame) return { aspect: 1, angle: 0 };
-  const rect = frame.getBoundingClientRect();
-  const transform = getEditDocument().defaultView.getComputedStyle(frame).transform;
+  const doc = getEditDocument();
+  const frame = doc.querySelector(`[data-photo-slot="${slot}"]`);
+  const preview = doc.querySelector(`[data-photo-preview="${slot}"]`);
+  const target = frame || preview;
+  if (!target) return { aspect: 1, angle: 0 };
+  const rect = target.getBoundingClientRect();
+  const transform = doc.defaultView.getComputedStyle(target).transform;
   let angle = 0;
 
   if (transform && transform !== "none") {
@@ -225,22 +206,20 @@ function applyPendingPhoto(slot, dataUrl) {
   }
 }
 
-function renderUploads() {
-  uploadList.innerHTML = "";
-  photoSlots.forEach(([slot, label]) => {
-    const row = document.createElement("label");
-    row.className = "admin-upload-row";
-    row.innerHTML = `<span>${label}</span><input type="file" accept="image/*" />`;
-    const input = row.querySelector("input");
+function bindInlinePhotoUploads(doc) {
+  const inputs = Array.from(doc.querySelectorAll("[data-photo-input], [data-admin-photo]"));
+  inputs.forEach((input) => {
+    if (input.dataset.adminBound === "true") return;
+    input.dataset.adminBound = "true";
     input.addEventListener("change", () => {
+      const slot = input.dataset.photoInput || input.dataset.adminPhoto;
       const file = input.files?.[0];
       input.value = "";
-      if (!file || !file.type.startsWith("image/")) return;
+      if (!slot || !file || !file.type.startsWith("image/")) return;
       const reader = new FileReader();
       reader.addEventListener("load", () => openCropEditor(slot, String(reader.result)));
       reader.readAsDataURL(file);
     });
-    uploadList.appendChild(row);
   });
 }
 
@@ -254,9 +233,7 @@ function saveAllChanges() {
   });
 
   pendingPhotos.forEach((value, slot) => localStorage.setItem(`wedding-admin-photo-${slot}`, value));
-  pendingPhotoCollections.forEach((value, key) => localStorage.setItem(key, value));
   pendingPhotos.clear();
-  pendingPhotoCollections.clear();
   saveStatus.textContent = "Todas as alterações foram salvas.";
   editPreview.contentWindow.location.reload();
   refreshVisitorPreview();
@@ -337,8 +314,6 @@ document.querySelectorAll("[data-admin-tab]").forEach((tab) => {
     if (target === "view") refreshVisitorPreview();
   });
 });
-
-renderUploads();
 
 if (sessionStorage.getItem(authKey) === "true") {
   unlockAdmin();

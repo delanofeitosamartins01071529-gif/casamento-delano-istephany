@@ -153,6 +153,7 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   renderPhotoPreview(key, getStoredPhotos(key));
 
   input.addEventListener("change", async () => {
+    if (document.body.classList.contains("admin-editing")) return;
     const files = Array.from(input.files || []).filter((file) => file.type.startsWith("image/"));
     if (!files.length) return;
 
@@ -356,6 +357,7 @@ document.querySelectorAll("[data-admin-photo]").forEach((input) => {
   }
 
   input.addEventListener("change", () => {
+    if (document.body.classList.contains("admin-editing")) return;
     const file = input.files?.[0];
     if (!file || !file.type.startsWith("image/") || !image || !frame) return;
     const reader = new FileReader();
