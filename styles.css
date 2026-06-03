@@ -297,15 +297,46 @@ textarea {
 }
 
 .admin-preview-wrap {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
   padding: 18px;
 }
 
-.admin-preview-wrap iframe {
+.admin-tabs {
+  display: inline-flex;
+  width: max-content;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(251, 250, 246, 0.88);
+}
+
+.admin-tab {
+  min-height: 40px;
+  border: 0;
+  padding: 0 18px;
+  color: var(--olive-dark);
+  background: transparent;
+  font-weight: 800;
+}
+
+.admin-tab.is-active {
+  color: var(--white);
+  background: var(--olive);
+}
+
+.admin-frame {
+  display: none;
   width: 100%;
-  height: calc(100vh - 36px);
+  height: calc(100vh - 88px);
   border: 1px solid var(--line);
   background: white;
   box-shadow: var(--shadow);
+}
+
+.admin-frame.is-active {
+  display: block;
 }
 
 .crop-modal {
@@ -1561,7 +1592,7 @@ fieldset {
     border-bottom: 1px solid var(--line);
   }
 
-  .admin-preview-wrap iframe {
+  .admin-frame {
     height: 76vh;
   }
 

@@ -1,4 +1,5 @@
-const preview = document.getElementById("sitePreview");
+const editPreview = document.getElementById("sitePreview");
+const visitorPreview = document.getElementById("visitorPreview");
 const login = document.getElementById("adminLogin");
 const shell = document.getElementById("adminShell");
 const loginForm = document.getElementById("adminLoginForm");
@@ -6,7 +7,6 @@ const loginStatus = document.getElementById("adminLoginStatus");
 const adminUser = document.getElementById("adminUser");
 const adminPassword = document.getElementById("adminPassword");
 const logoutButton = document.getElementById("adminLogout");
-const editToggle = document.getElementById("adminEditMode");
 const saveAllButton = document.getElementById("adminSaveAll");
 const saveStatus = document.getElementById("adminSaveStatus");
 const clearButton = document.getElementById("adminClearChanges");
@@ -70,98 +70,72 @@ const photoSlots = [
 ];
 
 let editableElements = [];
+let saveFieldElements = [];
 let cropState = null;
 const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
-const pendingText = new Map();
 const pendingPhotos = new Map();
 const pendingPhotoCollections = new Map();
+
+function getEditDocument() {
+  return editPreview.contentDocument || editPreview.contentWindow.document;
+}
+
+function markPending() {
+  saveStatus.textContent = "Há alterações não salvas.";
+}
+
+function refreshVisitorPreview() {
+  visitorPreview.src = `index.html?preview=${Date.now()}`;
+}
 
 function unlockAdmin() {
   login.classList.add("is-hidden");
   shell.classList.remove("is-locked");
   sessionStorage.setItem(authKey, "true");
-  preview.src = "index.html";
+  editPreview.src = "index.html";
+  refreshVisitorPreview();
 }
 
 function lockAdmin() {
   shell.classList.add("is-locked");
   login.classList.remove("is-hidden");
   sessionStorage.removeItem(authKey);
-  preview.removeAttribute("src");
+  editPreview.removeAttribute("src");
+  visitorPreview.removeAttribute("src");
   adminPassword.value = "";
   adminUser.focus();
 }
 
-function getPreviewDocument() {
-  return preview.contentDocument || preview.contentWindow.document;
-}
-
 function collectEditableElements() {
-  const doc = getPreviewDocument();
+  const doc = getEditDocument();
   editableElements = editableSelectors.flatMap((selector) => Array.from(doc.querySelectorAll(selector)));
+  saveFieldElements = Array.from(doc.querySelectorAll("[data-save-field]"));
+
   editableElements.forEach((element, index) => {
     const key = `wedding-admin-text-${index}`;
     element.dataset.adminKey = key;
-    const savedText = pendingText.get(key) ?? localStorage.getItem(key);
+    const savedText = localStorage.getItem(key);
     if (savedText !== null) element.textContent = savedText;
-    element.addEventListener("input", () => {
-      pendingText.set(key, element.textContent.trim());
-      markPending();
-    });
+    element.contentEditable = "true";
+    element.spellcheck = true;
+    element.addEventListener("input", markPending);
   });
 
-  doc.querySelectorAll("[data-save-field]").forEach((field) => {
+  saveFieldElements.forEach((field) => {
     const key = `casamento-${field.dataset.saveField}`;
-    field.value = pendingText.get(key) ?? localStorage.getItem(key) ?? "";
-    field.addEventListener("input", () => {
-      pendingText.set(key, field.value);
-      markPending();
-    });
+    field.value = localStorage.getItem(key) || "";
+    field.addEventListener("input", markPending);
   });
 
-  doc.querySelectorAll("[data-photo-input]").forEach((input) => {
-    input.addEventListener("change", async () => {
-      const key = input.dataset.photoInput;
-      const storageKey = `casamento-photos-${key}`;
-      const files = Array.from(input.files || []).filter((file) => file.type.startsWith("image/"));
-      if (!files.length) return;
-
-      const photos = await Promise.all(
-        files.map(
-          (file) =>
-            new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.addEventListener("load", () => resolve(String(reader.result)));
-              reader.readAsDataURL(file);
-            })
-        )
-      );
-
-      pendingPhotoCollections.set(storageKey, JSON.stringify(photos));
-      markPending();
-    });
-  });
-}
-
-function markPending() {
-  if (saveStatus) saveStatus.textContent = "Há alterações não salvas.";
-}
-
-function setEditMode(enabled) {
-  const doc = getPreviewDocument();
-  doc.body.classList.toggle("admin-editing", enabled);
-  editableElements.forEach((element) => {
-    element.contentEditable = String(enabled);
-    element.spellcheck = enabled;
-  });
+  doc.body.classList.add("admin-editing");
 }
 
 function getFrameInfo(slot) {
-  const frame = getPreviewDocument().querySelector(`[data-photo-slot="${slot}"]`);
+  const frame = getEditDocument().querySelector(`[data-photo-slot="${slot}"]`);
   if (!frame) return { aspect: 1, angle: 0 };
   const rect = frame.getBoundingClientRect();
-  const transform = getPreviewDocument().defaultView.getComputedStyle(frame).transform;
+  const transform = getEditDocument().defaultView.getComputedStyle(frame).transform;
   let angle = 0;
 
   if (transform && transform !== "none") {
@@ -231,6 +205,26 @@ function closeCropEditor() {
   cropState = null;
 }
 
+function applyPendingPhoto(slot, dataUrl) {
+  const doc = getEditDocument();
+  const frame = doc.querySelector(`[data-photo-slot="${slot}"]`);
+  const frameImage = frame?.querySelector("img");
+  if (frame && frameImage) {
+    frameImage.src = dataUrl;
+    frame.classList.add("has-image");
+    return;
+  }
+
+  const previewBox = doc.querySelector(`[data-photo-preview="${slot}"]`);
+  if (previewBox) {
+    previewBox.innerHTML = "";
+    const image = doc.createElement("img");
+    image.alt = "Foto enviada";
+    image.src = dataUrl;
+    previewBox.appendChild(image);
+  }
+}
+
 function renderUploads() {
   uploadList.innerHTML = "";
   photoSlots.forEach(([slot, label]) => {
@@ -250,24 +244,22 @@ function renderUploads() {
   });
 }
 
-function applyPendingPhoto(slot, dataUrl) {
-  const doc = getPreviewDocument();
-  const frame = doc.querySelector(`[data-photo-slot="${slot}"]`);
-  const frameImage = frame?.querySelector("img");
-  if (frame && frameImage) {
-    frameImage.src = dataUrl;
-    frame.classList.add("has-image");
-    return;
-  }
+function saveAllChanges() {
+  editableElements.forEach((element) => {
+    localStorage.setItem(element.dataset.adminKey, element.textContent.trim());
+  });
 
-  const previewBox = doc.querySelector(`[data-photo-preview="${slot}"]`);
-  if (previewBox) {
-    previewBox.innerHTML = "";
-    const image = doc.createElement("img");
-    image.alt = "Foto enviada";
-    image.src = dataUrl;
-    previewBox.appendChild(image);
-  }
+  saveFieldElements.forEach((field) => {
+    localStorage.setItem(`casamento-${field.dataset.saveField}`, field.value);
+  });
+
+  pendingPhotos.forEach((value, slot) => localStorage.setItem(`wedding-admin-photo-${slot}`, value));
+  pendingPhotoCollections.forEach((value, key) => localStorage.setItem(key, value));
+  pendingPhotos.clear();
+  pendingPhotoCollections.clear();
+  saveStatus.textContent = "Todas as alterações foram salvas.";
+  editPreview.contentWindow.location.reload();
+  refreshVisitorPreview();
 }
 
 cropZoom.addEventListener("input", () => {
@@ -312,10 +304,7 @@ cropSave.addEventListener("click", () => {
   button.addEventListener("click", closeCropEditor);
 });
 
-preview.addEventListener("load", () => {
-  collectEditableElements();
-  setEditMode(editToggle.checked);
-});
+editPreview.addEventListener("load", collectEditableElements);
 
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -328,25 +317,25 @@ loginForm.addEventListener("submit", (event) => {
 });
 
 logoutButton.addEventListener("click", lockAdmin);
-
-editToggle.addEventListener("change", () => setEditMode(editToggle.checked));
-
-saveAllButton.addEventListener("click", () => {
-  pendingText.forEach((value, key) => localStorage.setItem(key, value));
-  pendingPhotos.forEach((value, slot) => localStorage.setItem(`wedding-admin-photo-${slot}`, value));
-  pendingPhotoCollections.forEach((value, key) => localStorage.setItem(key, value));
-  pendingText.clear();
-  pendingPhotos.clear();
-  pendingPhotoCollections.clear();
-  saveStatus.textContent = "Todas as alterações foram salvas.";
-  preview.contentWindow.location.reload();
-});
+saveAllButton.addEventListener("click", saveAllChanges);
 
 clearButton.addEventListener("click", () => {
   Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith("wedding-admin-")) localStorage.removeItem(key);
+    if (key.startsWith("wedding-admin-") || key.startsWith("casamento-")) localStorage.removeItem(key);
   });
-  preview.contentWindow.location.reload();
+  saveStatus.textContent = "Edições salvas foram limpas.";
+  editPreview.contentWindow.location.reload();
+  refreshVisitorPreview();
+});
+
+document.querySelectorAll("[data-admin-tab]").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const target = tab.dataset.adminTab;
+    document.querySelectorAll("[data-admin-tab]").forEach((item) => item.classList.toggle("is-active", item === tab));
+    editPreview.classList.toggle("is-active", target === "edit");
+    visitorPreview.classList.toggle("is-active", target === "view");
+    if (target === "view") refreshVisitorPreview();
+  });
 });
 
 renderUploads();

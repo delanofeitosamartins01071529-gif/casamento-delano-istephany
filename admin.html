@@ -30,6 +30,7 @@
         <p class="form-status" id="adminLoginStatus" role="status"></p>
       </form>
     </section>
+
     <main class="admin-shell is-locked" id="adminShell">
       <section class="admin-sidebar">
         <a class="admin-back" href="index.html">Voltar ao site</a>
@@ -41,23 +42,26 @@
           </div>
         </div>
         <p>
-          Ative a edição, clique nos textos do preview e altere o conteúdo. Para fotos,
-          use os campos abaixo; tudo fica salvo neste navegador.
+          Clique nos textos do preview e altere o conteúdo. Para fotos, use os
+          campos abaixo. Ao terminar, salve todas as alterações.
         </p>
         <button class="button muted full" id="adminLogout" type="button">Sair do modo ADM</button>
-        <label class="switch-row admin-switch">
-          <span>Editar textos no preview</span>
-          <input id="adminEditMode" type="checkbox" />
-        </label>
         <button class="button primary full" id="adminSaveAll" type="button">Salvar todas as alterações</button>
         <button class="button muted full" id="adminClearChanges" type="button">Limpar edições salvas</button>
         <p class="form-status" id="adminSaveStatus" role="status"></p>
         <div class="admin-upload-list" id="adminUploadList"></div>
       </section>
+
       <section class="admin-preview-wrap">
-        <iframe id="sitePreview" title="Preview do site"></iframe>
+        <div class="admin-tabs" role="tablist" aria-label="Visualizações do ADM">
+          <button class="admin-tab is-active" type="button" data-admin-tab="edit">Editar</button>
+          <button class="admin-tab" type="button" data-admin-tab="view">Visualização</button>
+        </div>
+        <iframe class="admin-frame is-active" id="sitePreview" title="Preview editável do site"></iframe>
+        <iframe class="admin-frame" id="visitorPreview" title="Visualização do visitante"></iframe>
       </section>
     </main>
+
     <div class="crop-modal" id="cropModal" aria-hidden="true">
       <div class="crop-backdrop" id="cropCancelBackdrop"></div>
       <section class="crop-panel" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
@@ -81,6 +85,7 @@
         </div>
       </section>
     </div>
+
     <script src="admin.js"></script>
   </body>
 </html>
