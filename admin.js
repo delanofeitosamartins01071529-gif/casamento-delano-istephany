@@ -2,6 +2,13 @@ const preview = document.getElementById("sitePreview");
 const editToggle = document.getElementById("adminEditMode");
 const clearButton = document.getElementById("adminClearChanges");
 const uploadList = document.getElementById("adminUploadList");
+const cropModal = document.getElementById("cropModal");
+const cropCanvas = document.getElementById("cropCanvas");
+const cropZoom = document.getElementById("cropZoom");
+const cropSave = document.getElementById("cropSave");
+const cropCancel = document.getElementById("cropCancel");
+const cropCancelTop = document.getElementById("cropCancelTop");
+const cropCancelBackdrop = document.getElementById("cropCancelBackdrop");
 
 const editableSelectors = [
   ".hero h1",
@@ -28,27 +35,28 @@ const editableSelectors = [
   ".gift-modal h2",
   ".gift-modal p",
   ".memory-copy h2",
-  ".memory-frame figcaption",
   ".site-footer p",
 ];
 
 const photoSlots = [
-  ["memoria-01", "Foto especial"],
-  ["memoria-02", "Nós dois"],
-  ["memoria-03", "Família e amigos"],
-  ["memoria-04", "Nosso carinho"],
-  ["memoria-05", "Um detalhe bonito"],
-  ["memoria-06", "Um sorriso"],
-  ["memoria-07", "Pré-wedding"],
-  ["memoria-08", "Com os padrinhos"],
-  ["memoria-09", "Detalhes"],
-  ["memoria-10", "Nosso lugar favorito"],
-  ["memoria-11", "Um abraço"],
-  ["memoria-12", "A celebração"],
-  ["memoria-14", "Detalhe do dia"],
+  ["memoria-01", "Quadro 01"],
+  ["memoria-02", "Quadro 02"],
+  ["memoria-03", "Quadro 03"],
+  ["memoria-04", "Quadro 04"],
+  ["memoria-05", "Quadro 05"],
+  ["memoria-06", "Quadro 06"],
+  ["memoria-07", "Quadro 07"],
+  ["memoria-08", "Quadro 08"],
+  ["memoria-09", "Quadro 09"],
+  ["memoria-10", "Quadro 10"],
+  ["memoria-11", "Quadro 11"],
+  ["memoria-12", "Quadro 12"],
+  ["memoria-14", "Quadro 13"],
 ];
 
 let editableElements = [];
+let cropState = null;
+const cropContext = cropCanvas.getContext("2d");
 
 function getPreviewDocument() {
   return preview.contentDocument || preview.contentWindow.document;
@@ -75,6 +83,80 @@ function setEditMode(enabled) {
   });
 }
 
+function getFrameInfo(slot) {
+  const frame = getPreviewDocument().querySelector(`[data-photo-slot="${slot}"]`);
+  if (!frame) return { aspect: 1, angle: 0 };
+  const rect = frame.getBoundingClientRect();
+  const transform = getPreviewDocument().defaultView.getComputedStyle(frame).transform;
+  let angle = 0;
+
+  if (transform && transform !== "none") {
+    const values = transform.match(/matrix\(([^)]+)\)/)?.[1].split(",").map(Number);
+    if (values?.length >= 2) angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+  }
+
+  return {
+    aspect: Math.max(rect.width, 1) / Math.max(rect.height, 1),
+    angle,
+  };
+}
+
+function sizeCropCanvas(aspect) {
+  if (aspect >= 1) {
+    cropCanvas.width = 1200;
+    cropCanvas.height = Math.round(1200 / aspect);
+  } else {
+    cropCanvas.height = 1200;
+    cropCanvas.width = Math.round(1200 * aspect);
+  }
+}
+
+function drawCrop() {
+  if (!cropState) return;
+  const { image, zoom, offsetX, offsetY } = cropState;
+  const baseScale = Math.max(cropCanvas.width / image.naturalWidth, cropCanvas.height / image.naturalHeight);
+  const scale = baseScale * zoom;
+  const drawWidth = image.naturalWidth * scale;
+  const drawHeight = image.naturalHeight * scale;
+  const x = (cropCanvas.width - drawWidth) / 2 + offsetX;
+  const y = (cropCanvas.height - drawHeight) / 2 + offsetY;
+
+  cropContext.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+  cropContext.fillStyle = "#fbfaf6";
+  cropContext.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+  cropContext.drawImage(image, x, y, drawWidth, drawHeight);
+}
+
+function openCropEditor(slot, dataUrl) {
+  const image = new Image();
+  image.addEventListener("load", () => {
+    const frameInfo = getFrameInfo(slot);
+    sizeCropCanvas(frameInfo.aspect);
+    cropCanvas.style.setProperty("--crop-angle", `${frameInfo.angle}deg`);
+    cropZoom.value = "1";
+    cropState = {
+      slot,
+      image,
+      zoom: 1,
+      offsetX: 0,
+      offsetY: 0,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
+    };
+    drawCrop();
+    cropModal.classList.add("is-open");
+    cropModal.setAttribute("aria-hidden", "false");
+  });
+  image.src = dataUrl;
+}
+
+function closeCropEditor() {
+  cropModal.classList.remove("is-open");
+  cropModal.setAttribute("aria-hidden", "true");
+  cropState = null;
+}
+
 function renderUploads() {
   uploadList.innerHTML = "";
   photoSlots.forEach(([slot, label]) => {
@@ -84,17 +166,55 @@ function renderUploads() {
     const input = row.querySelector("input");
     input.addEventListener("change", () => {
       const file = input.files?.[0];
+      input.value = "";
       if (!file || !file.type.startsWith("image/")) return;
       const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        localStorage.setItem(`wedding-admin-photo-${slot}`, String(reader.result));
-        preview.contentWindow.location.reload();
-      });
+      reader.addEventListener("load", () => openCropEditor(slot, String(reader.result)));
       reader.readAsDataURL(file);
     });
     uploadList.appendChild(row);
   });
 }
+
+cropZoom.addEventListener("input", () => {
+  if (!cropState) return;
+  cropState.zoom = Number(cropZoom.value);
+  drawCrop();
+});
+
+cropCanvas.addEventListener("pointerdown", (event) => {
+  if (!cropState) return;
+  cropCanvas.setPointerCapture(event.pointerId);
+  cropState.dragging = true;
+  cropState.lastX = event.clientX;
+  cropState.lastY = event.clientY;
+});
+
+cropCanvas.addEventListener("pointermove", (event) => {
+  if (!cropState?.dragging) return;
+  const scaleX = cropCanvas.width / cropCanvas.getBoundingClientRect().width;
+  const scaleY = cropCanvas.height / cropCanvas.getBoundingClientRect().height;
+  cropState.offsetX += (event.clientX - cropState.lastX) * scaleX;
+  cropState.offsetY += (event.clientY - cropState.lastY) * scaleY;
+  cropState.lastX = event.clientX;
+  cropState.lastY = event.clientY;
+  drawCrop();
+});
+
+cropCanvas.addEventListener("pointerup", () => {
+  if (cropState) cropState.dragging = false;
+});
+
+cropSave.addEventListener("click", () => {
+  if (!cropState) return;
+  localStorage.setItem(`wedding-admin-photo-${cropState.slot}`, cropCanvas.toDataURL("image/jpeg", 0.92));
+  preview.contentWindow.location.reload();
+  closeCropEditor();
+});
+
+[cropCancel, cropCancelTop, cropCancelBackdrop].forEach((button) => {
+  button.addEventListener("click", closeCropEditor);
+});
 
 preview.addEventListener("load", () => {
   collectEditableElements();

@@ -38,6 +38,29 @@
         <iframe id="sitePreview" title="Preview do site" src="index.html"></iframe>
       </section>
     </main>
+    <div class="crop-modal" id="cropModal" aria-hidden="true">
+      <div class="crop-backdrop" id="cropCancelBackdrop"></div>
+      <section class="crop-panel" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+        <div class="crop-panel-head">
+          <div>
+            <p class="eyebrow">Ajustar foto</p>
+            <h2 id="cropTitle">Recorte e enquadramento</h2>
+          </div>
+          <button class="modal-close" id="cropCancelTop" type="button" aria-label="Fechar">×</button>
+        </div>
+        <div class="crop-stage">
+          <canvas id="cropCanvas"></canvas>
+        </div>
+        <label class="volume-row crop-zoom">
+          <span>Zoom</span>
+          <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" />
+        </label>
+        <div class="crop-actions">
+          <button class="button muted" id="cropCancel" type="button">Cancelar</button>
+          <button class="button primary" id="cropSave" type="button">Salvar foto</button>
+        </div>
+      </section>
+    </div>
     <script src="admin.js"></script>
   </body>
 </html>
