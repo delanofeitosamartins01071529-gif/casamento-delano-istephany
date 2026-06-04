@@ -326,15 +326,15 @@ document.addEventListener("pointerdown", (event) => {
 
   for (let index = 0; index < petals; index += 1) {
     const petal = document.createElement("span");
-    const drift = (index - 1) * 13 + (Math.random() - 0.5) * 10;
-    const fall = 46 + Math.random() * 34;
+    const drift = (index - 1) * 16 + (Math.random() - 0.5) * 12;
+    const fall = 92 + Math.random() * 54;
     petal.className = "click-spark";
     petal.style.left = `${event.clientX + drift * 0.4}px`;
-    petal.style.top = `${event.clientY - 8}px`;
+    petal.style.top = `${event.clientY - 12}px`;
     petal.style.setProperty("--x", `${drift}px`);
     petal.style.setProperty("--y", `${fall}px`);
-    petal.style.setProperty("--angle", `${-26 + Math.random() * 52}deg`);
-    petal.style.setProperty("--sway", `${(Math.random() - 0.5) * 18}px`);
+    petal.style.setProperty("--angle", `${-32 + Math.random() * 64}deg`);
+    petal.style.setProperty("--spin", `${150 + Math.random() * 90}deg`);
     clickLayer.appendChild(petal);
     petal.addEventListener("animationend", () => petal.remove(), { once: true });
   }
