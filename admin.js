@@ -6,10 +6,8 @@ const loginForm = document.getElementById("adminLoginForm");
 const loginStatus = document.getElementById("adminLoginStatus");
 const adminUser = document.getElementById("adminUser");
 const adminPassword = document.getElementById("adminPassword");
-const logoutButton = document.getElementById("adminLogout");
 const saveAllButton = document.getElementById("adminSaveAll");
 const saveStatus = document.getElementById("adminSaveStatus");
-const clearButton = document.getElementById("adminClearChanges");
 const cropModal = document.getElementById("cropModal");
 const cropCanvas = document.getElementById("cropCanvas");
 const cropZoom = document.getElementById("cropZoom");
@@ -365,17 +363,7 @@ loginForm.addEventListener("submit", (event) => {
   loginStatus.textContent = "Usuário ou senha incorretos.";
 });
 
-logoutButton.addEventListener("click", lockAdmin);
 saveAllButton.addEventListener("click", saveAllChanges);
-
-clearButton.addEventListener("click", () => {
-  Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith("wedding-admin-") || key.startsWith("casamento-")) localStorage.removeItem(key);
-  });
-  saveStatus.textContent = "Edições salvas foram limpas.";
-  editPreview.contentWindow.location.reload();
-  refreshVisitorPreview();
-});
 
 document.querySelectorAll("[data-admin-tab]").forEach((tab) => {
   tab.addEventListener("click", () => {
