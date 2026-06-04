@@ -223,6 +223,15 @@ function setMusicHint(text) {
   return text;
 }
 
+function updateVolumeFill() {
+  if (!musicVolume) return;
+  const min = Number(musicVolume.min || 0);
+  const max = Number(musicVolume.max || 1);
+  const value = Number(musicVolume.value);
+  const percent = ((value - min) / (max - min)) * 100;
+  musicVolume.style.setProperty("--volume-percent", `${Math.max(0, Math.min(100, percent))}%`);
+}
+
 function updateMusicState() {
   if (!music || !musicState || !musicEnabled) return;
   musicState.textContent = "Música";
@@ -275,6 +284,7 @@ if (isEmbeddedPreview) {
 } else if (music && musicEnabled && musicVolume) {
   music.volume = 0;
   musicVolume.value = String(fadeTargetVolume);
+  updateVolumeFill();
   musicEnabled.checked = true;
   startMusic({ withFade: true });
 
@@ -311,6 +321,7 @@ if (isEmbeddedPreview) {
 
   musicVolume.addEventListener("input", () => {
     const value = Number(musicVolume.value);
+    updateVolumeFill();
     if (!music.paused) music.volume = value;
   });
 
