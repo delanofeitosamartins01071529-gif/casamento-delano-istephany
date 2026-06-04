@@ -50,7 +50,7 @@ const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
 const pendingPhotos = new Map();
 const modalAnimationDuration = 1500;
-const textStoragePrefix = "wedding-admin-text-v3";
+const textStoragePrefix = "wedding-admin-text-v4";
 
 function getEditDocument() {
   return editPreview.contentDocument || editPreview.contentWindow.document;

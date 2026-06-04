@@ -406,7 +406,7 @@ const editableSelectors = [
   ".site-footer p",
 ];
 
-const textStoragePrefix = "wedding-admin-text-v3";
+const textStoragePrefix = "wedding-admin-text-v4";
 const editableElements = [];
 
 editableSelectors.forEach((selector) => {
