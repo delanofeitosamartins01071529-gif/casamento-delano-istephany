@@ -173,17 +173,15 @@ function renderPhotoPreview(key, photos) {
 }
 
 function getStoredPhotos(key) {
-  const photos = [];
   const adminPhoto = localStorage.getItem(`wedding-admin-photo-${key}`);
   const publishedPhotos = publishedSiteData.photos?.[key];
   const collection = JSON.parse(localStorage.getItem(`casamento-photos-${key}`) || "[]");
 
-  if (adminPhoto) photos.push(adminPhoto);
-  if (Array.isArray(publishedPhotos)) photos.push(...publishedPhotos.filter(Boolean));
-  else if (publishedPhotos) photos.push(publishedPhotos);
-  if (Array.isArray(collection)) photos.push(...collection.filter(Boolean));
-
-  return photos;
+  if (adminPhoto) return [adminPhoto];
+  if (Array.isArray(publishedPhotos)) return publishedPhotos.filter(Boolean).slice(0, 1);
+  if (publishedPhotos) return [publishedPhotos];
+  if (Array.isArray(collection)) return collection.filter(Boolean).slice(0, 1);
+  return [];
 }
 
 function renderMemoryPhoto(slot) {
