@@ -1229,12 +1229,13 @@ h3 {
 .attire-section {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+  grid-template-columns: minmax(0, 0.84fr) minmax(320px, 0.78fr);
   gap: 40px;
   align-items: center;
   max-width: 1240px;
   margin: 0 auto;
-  padding-bottom: clamp(32px, 4vw, 52px);
+  padding-top: clamp(24px, 3vw, 42px);
+  padding-bottom: clamp(34px, 4vw, 56px);
   isolation: isolate;
 }
 
@@ -1244,10 +1245,10 @@ h3 {
   inset: -34px -9vw -26px -9vw;
   z-index: -1;
   background:
-    linear-gradient(90deg, rgba(251, 250, 246, 0.94), rgba(251, 250, 246, 0.08) 12%, rgba(251, 250, 246, 0.2) 46%, rgba(251, 250, 246, 0.1) 88%, rgba(251, 250, 246, 0.96)),
-    linear-gradient(180deg, rgba(251, 250, 246, 0.98), rgba(251, 250, 246, 0.08) 17%, rgba(251, 250, 246, 0.12) 74%, rgba(251, 250, 246, 0.98)),
-    url("assets/dresscode-watercolor-overlap.png") center center / cover no-repeat;
-  opacity: 0.48;
+    linear-gradient(90deg, rgba(251, 250, 246, 0.94), rgba(251, 250, 246, 0.14) 16%, rgba(251, 250, 246, 0.28) 48%, rgba(251, 250, 246, 0.14) 84%, rgba(251, 250, 246, 0.96)),
+    linear-gradient(180deg, rgba(251, 250, 246, 0.98), rgba(251, 250, 246, 0.08) 18%, rgba(251, 250, 246, 0.1) 72%, rgba(251, 250, 246, 0.98)),
+    url("assets/guest-manual-sport-fino.png") center center / cover no-repeat;
+  opacity: 0.58;
   filter: saturate(1);
 }
 
@@ -1382,48 +1383,67 @@ body.admin-editing .memory-frame label {
   display: grid;
 }
 
-.palette {
+.guest-manual {
+  position: relative;
   display: grid;
-  gap: 18px;
+  gap: 9px;
+  margin: 0;
+  padding: clamp(24px, 3vw, 34px);
+  list-style: none;
+  border: 1px solid rgba(97, 114, 75, 0.3);
+  border-radius: 2px;
+  background: rgba(251, 250, 246, 0.72);
+  box-shadow: 0 28px 80px rgba(38, 47, 32, 0.1);
+  backdrop-filter: blur(2px);
 }
 
-.palette-item {
+.guest-manual::before,
+.guest-manual::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.guest-manual::before {
+  inset: 10px;
+  border: 1px solid rgba(97, 114, 75, 0.22);
+}
+
+.guest-manual::after {
+  top: 18px;
+  right: 24px;
+  width: 46px;
+  height: 46px;
+  opacity: 0.28;
+  background:
+    radial-gradient(circle at 50% 50%, var(--olive) 0 3px, transparent 4px),
+    radial-gradient(ellipse at 28% 50%, transparent 36%, var(--olive) 38% 42%, transparent 44%),
+    radial-gradient(ellipse at 72% 50%, transparent 36%, var(--olive) 38% 42%, transparent 44%),
+    radial-gradient(ellipse at 50% 28%, transparent 36%, var(--olive) 38% 42%, transparent 44%),
+    radial-gradient(ellipse at 50% 72%, transparent 36%, var(--olive) 38% 42%, transparent 44%);
+}
+
+.guest-manual li {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
-  align-items: center;
-  gap: 18px;
-  min-height: 80px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
   color: var(--olive-dark);
-}
-
-.palette-item > span {
-  display: block;
-  width: 66px;
-  height: 66px;
-  min-width: 66px;
-  aspect-ratio: 1;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--color);
-  box-shadow: 0 14px 34px rgba(38, 47, 32, 0.08);
-}
-
-.palette-item strong {
-  display: block;
-  color: var(--olive-dark);
-  font-size: clamp(1.22rem, 1.8vw, 1.55rem);
-  font-weight: 900;
-  line-height: 1.15;
-}
-
-.palette-item small {
-  display: block;
-  max-width: 36ch;
-  margin-top: 5px;
-  color: var(--gray);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 750;
   line-height: 1.35;
+}
+
+.guest-manual li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-top: 0.54em;
+  border: 1px solid rgba(97, 114, 75, 0.56);
+  border-radius: 50%;
+  background: var(--olive);
+  box-shadow: 0 0 0 5px rgba(97, 114, 75, 0.08);
 }
 
 label,
@@ -2327,13 +2347,8 @@ fieldset {
     grid-template-columns: 1fr;
   }
 
-  .palette-item {
-    grid-template-columns: 58px minmax(0, 1fr);
-  }
-
-  .palette-item > span {
-    width: 52px;
-    height: 52px;
+  .guest-manual {
+    padding: 22px;
   }
 
   .attire-section::before {
