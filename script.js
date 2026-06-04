@@ -147,6 +147,14 @@ document.querySelectorAll("[data-save-modal]").forEach((button) => {
   });
 });
 
+let publishedSiteData = { photos: {} };
+const photoSlots = [
+  "historia-encontro",
+  "historia-pedido",
+  "historia-grande-dia",
+  "pix",
+];
+
 function renderPhotoPreview(key, photos) {
   const preview = document.querySelector(`[data-photo-preview="${key}"]`);
   if (!preview) return;
@@ -167,13 +175,41 @@ function renderPhotoPreview(key, photos) {
 function getStoredPhotos(key) {
   const photos = [];
   const adminPhoto = localStorage.getItem(`wedding-admin-photo-${key}`);
+  const publishedPhotos = publishedSiteData.photos?.[key];
   const collection = JSON.parse(localStorage.getItem(`casamento-photos-${key}`) || "[]");
 
   if (adminPhoto) photos.push(adminPhoto);
+  if (Array.isArray(publishedPhotos)) photos.push(...publishedPhotos.filter(Boolean));
+  else if (publishedPhotos) photos.push(publishedPhotos);
   if (Array.isArray(collection)) photos.push(...collection.filter(Boolean));
 
   return photos;
 }
+
+function renderMemoryPhoto(slot) {
+  const frame = document.querySelector(`[data-photo-slot="${slot}"]`);
+  const image = frame?.querySelector("img");
+  const photo = getStoredPhotos(slot)[0];
+  if (!frame || !image || !photo) return;
+  image.src = photo;
+  frame.classList.add("has-image");
+}
+
+function renderAllPublishedPhotos() {
+  photoSlots.forEach((slot) => renderPhotoPreview(slot, getStoredPhotos(slot)));
+  document.querySelectorAll("[data-photo-slot]").forEach((frame) => renderMemoryPhoto(frame.dataset.photoSlot));
+}
+
+fetch("site-data.json", { cache: "no-store" })
+  .then((response) => (response.ok ? response.json() : null))
+  .then((data) => {
+    if (!data || typeof data !== "object") return;
+    publishedSiteData = {
+      photos: data.photos && typeof data.photos === "object" ? data.photos : {},
+    };
+    renderAllPublishedPhotos();
+  })
+  .catch(() => {});
 
 document.querySelectorAll("[data-photo-input]").forEach((input) => {
   const key = input.dataset.photoInput;
@@ -200,12 +236,7 @@ document.querySelectorAll("[data-photo-input]").forEach((input) => {
   });
 });
 
-[
-  "historia-encontro",
-  "historia-pedido",
-  "historia-grande-dia",
-  "pix",
-].forEach((slot) => renderPhotoPreview(slot, getStoredPhotos(slot)));
+renderAllPublishedPhotos();
 
 const music = document.getElementById("weddingMusic");
 const musicWidget = document.querySelector(".music-widget");
@@ -408,7 +439,7 @@ document.querySelectorAll("[data-admin-photo]").forEach((input) => {
   const slotKey = `wedding-admin-photo-${input.dataset.adminPhoto}`;
   const frame = document.querySelector(`[data-photo-slot="${input.dataset.adminPhoto}"]`);
   const image = frame?.querySelector("img");
-  const savedPhoto = localStorage.getItem(slotKey);
+  const savedPhoto = getStoredPhotos(input.dataset.adminPhoto)[0];
 
   if (savedPhoto && image && frame) {
     image.src = savedPhoto;

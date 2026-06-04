@@ -1,0 +1,55 @@
+{
+  "photos": {
+    "casa": [
+      "assets/uploads/casa.jpg"
+    ],
+    "historia-encontro": [
+      "assets/uploads/historia-encontro.jpg"
+    ],
+    "historia-pedido": [
+      "assets/uploads/historia-pedido.jpg"
+    ],
+    "memoria-01": [
+      "assets/uploads/memoria-01.jpg"
+    ],
+    "memoria-02": [
+      "assets/uploads/memoria-02.jpg"
+    ],
+    "memoria-03": [
+      "assets/uploads/memoria-03.jpg"
+    ],
+    "memoria-04": [
+      "assets/uploads/memoria-04.jpg"
+    ],
+    "memoria-05": [
+      "assets/uploads/memoria-05.jpg"
+    ],
+    "memoria-06": [
+      "assets/uploads/memoria-06.jpg"
+    ],
+    "memoria-07": [
+      "assets/uploads/memoria-07.jpg"
+    ],
+    "memoria-08": [
+      "assets/uploads/memoria-08.jpg"
+    ],
+    "memoria-09": [
+      "assets/uploads/memoria-09.jpg"
+    ],
+    "memoria-10": [
+      "assets/uploads/memoria-10.jpg"
+    ],
+    "memoria-11": [
+      "assets/uploads/memoria-11.jpg"
+    ],
+    "memoria-12": [
+      "assets/uploads/memoria-12.jpg"
+    ],
+    "memoria-14": [
+      "assets/uploads/memoria-14.jpg"
+    ],
+    "pix": [
+      "assets/uploads/pix.jpg"
+    ]
+  }
+}
