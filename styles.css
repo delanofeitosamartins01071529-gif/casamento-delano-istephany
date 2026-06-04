@@ -1373,70 +1373,18 @@ fieldset {
   line-height: 1;
 }
 
-.gifts-section .gift-grid {
-  position: relative;
-  z-index: 2;
-  grid-template-columns: 1fr;
-  max-width: 860px;
-}
-
-.pix-bar {
-  min-height: 96px;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  align-content: center;
-  padding: 24px clamp(24px, 5vw, 42px);
-  text-align: left;
-}
-
-.pix-bar::after {
-  content: "Abrir";
-  color: var(--olive);
-  font-size: 0.8rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  transition: transform 220ms ease, color 220ms ease;
-}
-
-.pix-bar.is-expanded::after {
-  content: "Fechar";
-  color: var(--olive-dark);
-  transform: translateY(1px);
-}
-
-.pix-bar span,
-.pix-bar strong {
-  grid-column: 1;
-}
-
 .pix-panel {
   position: relative;
-  z-index: 1;
-  max-width: 860px;
-  max-height: 0;
-  margin: -1px auto 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-28px);
-  transition:
-    max-height 680ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 360ms ease,
-    transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.pix-panel.is-open {
-  max-height: 760px;
-  opacity: 1;
-  transform: translateY(0);
+  max-width: 980px;
+  margin: 34px auto 0;
 }
 
 .pix-panel-inner {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(260px, 0.82fr);
+  grid-template-columns: minmax(0, 0.82fr) minmax(320px, 0.9fr);
   gap: clamp(22px, 4vw, 44px);
   padding: clamp(24px, 4vw, 42px);
   border: 1px solid rgba(51, 64, 43, 0.12);
-  border-top: 0;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 247, 241, 0.94)),
     radial-gradient(circle at 82% 16%, rgba(97, 114, 75, 0.12), transparent 32%);
@@ -1461,6 +1409,15 @@ fieldset {
 
 .pix-photo-preview {
   margin-top: 0;
+}
+
+.pix-photo-preview .photo-print,
+.pix-photo-preview > img {
+  width: clamp(250px, 31vw, 380px);
+}
+
+.pix-photo-preview .photo-print {
+  padding: 14px 14px 38px;
 }
 
 .site-footer {
@@ -2160,14 +2117,18 @@ fieldset {
 @keyframes clickPetal {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--angle)) scale(0.35);
+    transform: translate(-50%, -50%) rotate(var(--angle)) scale(0.42);
   }
-  20% {
-    opacity: 1;
+  18% {
+    opacity: 0.9;
+  }
+  58% {
+    opacity: 0.82;
+    transform: translate(calc(-50% + var(--sway)), calc(-50% + (var(--y) * 0.58))) rotate(calc(var(--angle) + 54deg)) scale(0.86);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(calc(var(--angle) + 120deg)) scale(1);
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(calc(var(--angle) + 116deg)) scale(0.72);
   }
 }
 

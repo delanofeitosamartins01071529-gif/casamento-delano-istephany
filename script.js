@@ -122,17 +122,6 @@ document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
   });
 });
 
-document.querySelectorAll("[data-expand-target]").forEach((trigger) => {
-  trigger.addEventListener("click", () => {
-    const panel = document.getElementById(trigger.dataset.expandTarget);
-    if (!panel) return;
-    const isOpen = panel.classList.toggle("is-open");
-    trigger.classList.toggle("is-expanded", isOpen);
-    trigger.setAttribute("aria-expanded", String(isOpen));
-    panel.setAttribute("aria-hidden", String(!isOpen));
-  });
-});
-
 document.querySelectorAll("[data-close-modal]").forEach((closer) => {
   closer.addEventListener("click", () => {
     closeModal(closer.closest(".modal-layer"));
@@ -333,18 +322,19 @@ const clickLayer = document.getElementById("clickLayer");
 
 document.addEventListener("pointerdown", (event) => {
   if (!clickLayer || event.button !== 0) return;
-  const petals = 7;
+  const petals = 3;
 
   for (let index = 0; index < petals; index += 1) {
     const petal = document.createElement("span");
-    const angle = (Math.PI * 2 * index) / petals;
-    const distance = 28 + Math.random() * 18;
+    const drift = (index - 1) * 13 + (Math.random() - 0.5) * 10;
+    const fall = 46 + Math.random() * 34;
     petal.className = "click-spark";
-    petal.style.left = `${event.clientX}px`;
-    petal.style.top = `${event.clientY}px`;
-    petal.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
-    petal.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
-    petal.style.setProperty("--angle", `${Math.round((angle * 180) / Math.PI)}deg`);
+    petal.style.left = `${event.clientX + drift * 0.4}px`;
+    petal.style.top = `${event.clientY - 8}px`;
+    petal.style.setProperty("--x", `${drift}px`);
+    petal.style.setProperty("--y", `${fall}px`);
+    petal.style.setProperty("--angle", `${-26 + Math.random() * 52}deg`);
+    petal.style.setProperty("--sway", `${(Math.random() - 0.5) * 18}px`);
     clickLayer.appendChild(petal);
     petal.addEventListener("animationend", () => petal.remove(), { once: true });
   }
@@ -368,8 +358,6 @@ const editableSelectors = [
   ".attire-section p",
   ".palette strong",
   ".palette small",
-  ".gift-card span",
-  ".gift-card strong",
   ".pix-panel h3",
   ".pix-panel p",
   ".gift-modal h2",

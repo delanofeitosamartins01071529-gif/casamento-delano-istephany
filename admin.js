@@ -36,8 +36,6 @@ const editableSelectors = [
   ".attire-section p",
   ".palette strong",
   ".palette small",
-  ".gift-card span",
-  ".gift-card strong",
   ".pix-panel h3",
   ".pix-panel p",
   ".gift-modal h2",
