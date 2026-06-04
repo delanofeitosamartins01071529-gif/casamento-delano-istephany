@@ -25,44 +25,6 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-const form = document.getElementById("rsvpForm");
-const statusText = document.getElementById("formStatus");
-
-form?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const data = new FormData(form);
-  const response = {
-    name: data.get("name"),
-    guests: data.get("guests"),
-    attendance: data.get("attendance"),
-    message: data.get("message") || "",
-  };
-
-  localStorage.setItem("casamento-rsvp", JSON.stringify(response));
-
-  const message =
-    "Delano e Istephany, é com muito prazer que estarei sim presente nesse grande dia tão especial para vocês, que Deus abençoe e guie vocês nesses próximos meses, tudo dará certo!";
-
-  const whatsappUrl = `https://wa.me/558594292105?text=${encodeURIComponent(message)}`;
-  statusText.textContent = "Confirmação salva. Abrindo WhatsApp dos noivos...";
-  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-});
-
-const saved = localStorage.getItem("casamento-rsvp");
-if (saved && form) {
-  try {
-    const response = JSON.parse(saved);
-    form.elements.name.value = response.name || "";
-    form.elements.guests.value = response.guests || "1";
-    form.elements.message.value = response.message || "";
-    const attendance = form.querySelector(`[name="attendance"][value="${response.attendance}"]`);
-    if (attendance) attendance.checked = true;
-    statusText.textContent = "Sua última confirmação foi carregada.";
-  } catch {
-    localStorage.removeItem("casamento-rsvp");
-  }
-}
-
 let activeModal = null;
 let lastFocusedElement = null;
 const modalAnimationDuration = 1500;
@@ -157,6 +119,17 @@ document.querySelectorAll("[data-modal-target]").forEach((trigger) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
     openModal(document.getElementById(trigger.dataset.modalTarget));
+  });
+});
+
+document.querySelectorAll("[data-expand-target]").forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    const panel = document.getElementById(trigger.dataset.expandTarget);
+    if (!panel) return;
+    const isOpen = panel.classList.toggle("is-open");
+    trigger.classList.toggle("is-expanded", isOpen);
+    trigger.setAttribute("aria-expanded", String(isOpen));
+    panel.setAttribute("aria-hidden", String(!isOpen));
   });
 });
 
@@ -387,18 +360,18 @@ const editableSelectors = [
   ".section-heading p",
   ".story-grid h3",
   ".story-grid p",
-  ".timeline time",
   ".timeline h3",
   ".timeline p",
   ".venue-panel h3",
   ".venue-panel p",
   ".attire-section h2",
   ".attire-section p",
-  ".palette span",
-  ".rsvp-copy h2",
-  ".rsvp-copy p",
+  ".palette strong",
+  ".palette small",
   ".gift-card span",
   ".gift-card strong",
+  ".pix-panel h3",
+  ".pix-panel p",
   ".gift-modal h2",
   ".gift-modal p",
   ".memory-copy h2",
@@ -406,13 +379,19 @@ const editableSelectors = [
   ".site-footer p",
 ];
 
-const editableElements = editableSelectors.flatMap((selector) =>
-  Array.from(document.querySelectorAll(selector))
-);
+const textStoragePrefix = "wedding-admin-text-v3";
+const editableElements = [];
 
-editableElements.forEach((element, index) => {
-  const key = `wedding-admin-text-${index}`;
-  element.dataset.adminKey = key;
+editableSelectors.forEach((selector) => {
+  Array.from(document.querySelectorAll(selector)).forEach((element, index) => {
+    const key = `${textStoragePrefix}-${selector.replace(/[^a-z0-9]+/gi, "-")}-${index}`;
+    element.dataset.adminKey = key;
+    editableElements.push(element);
+  });
+});
+
+editableElements.forEach((element) => {
+  const key = element.dataset.adminKey;
   const savedText = localStorage.getItem(key);
   if (savedText !== null) element.textContent = savedText;
   element.addEventListener("input", () => localStorage.setItem(key, element.textContent.trim()));

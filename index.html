@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260603-07" />
+    <link rel="stylesheet" href="styles.css?v=20260603-08" />
   </head>
   <body>
     <header class="site-header" aria-label="Cabeçalho do site">
@@ -175,7 +175,7 @@
       <section class="section attire-section">
         <div>
           <p class="eyebrow">Paleta do casamento</p>
-          <h2>As cores que contam o nosso dia.</h2>
+          <h2>Nossa Paleta de Cores</h2>
           <p>
             Verde-oliva representa calma, crescimento e o cuidado que queremos cultivar.
             Branco traz leveza, paz e a beleza do recomeço. Cinza equilibra a paleta com
@@ -183,16 +183,34 @@
           </p>
         </div>
         <div class="palette" aria-label="Paleta de cores do casamento">
-          <span style="--color: #61724b">Verde-oliva</span>
-          <span style="--color: #f8f7f1">Branco</span>
-          <span style="--color: #9a9b95">Cinza</span>
+          <div class="palette-item" style="--color: #61724b">
+            <span aria-hidden="true"></span>
+            <div>
+              <strong>Verde-oliva</strong>
+              <small>Simboliza calma, crescimento e o cuidado que queremos cultivar.</small>
+            </div>
+          </div>
+          <div class="palette-item" style="--color: #f8f7f1">
+            <span aria-hidden="true"></span>
+            <div>
+              <strong>Branco</strong>
+              <small>Representa leveza, paz e a beleza de um novo começo.</small>
+            </div>
+          </div>
+          <div class="palette-item" style="--color: #9a9b95">
+            <span aria-hidden="true"></span>
+            <div>
+              <strong>Cinza</strong>
+              <small>Equilibra a paleta com elegância, firmeza e serenidade.</small>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="section memories-section" aria-label="Galeria de fotos">
         <div class="memory-copy">
           <p class="eyebrow">Memórias</p>
-          <h2>Alguns espaços para guardar os nossos melhores momentos.</h2>
+          <h2>Nossas Memórias</h2>
         </div>
         <div class="memory-board">
           <figure class="memory-frame tall" data-photo-slot="memoria-01">
@@ -270,10 +288,29 @@
           <p>Para quem desejar contribuir com carinho, deixamos uma opção simples.</p>
         </div>
         <div class="gift-grid">
-          <button class="gift-card pix-bar" type="button" data-modal-target="modal-pix">
+          <button class="gift-card pix-bar" type="button" data-expand-target="pixPanel" aria-expanded="false">
             <span>Pix dos noivos</span>
             <strong>Nossa chave Pix</strong>
           </button>
+        </div>
+        <div class="pix-panel" id="pixPanel" aria-hidden="true">
+          <div class="pix-panel-inner">
+            <div class="pix-copy">
+              <p class="eyebrow">Pix dos noivos</p>
+              <h3>Nossa chave Pix</h3>
+              <p>
+                Este espaço reúne a chave Pix dos noivos, uma imagem de apoio e uma mensagem
+                de agradecimento para quem desejar contribuir com carinho.
+              </p>
+            </div>
+            <div class="pix-media">
+              <label class="upload-box">
+                <input type="file" accept="image/*" data-photo-input="pix" />
+                <span>Adicionar QR Code ou imagem de apoio</span>
+              </label>
+              <div class="photo-preview pix-photo-preview" data-photo-preview="pix"></div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -362,38 +399,12 @@
       </section>
     </div>
 
-    <div class="modal-layer" id="modal-pix" role="dialog" aria-modal="true" aria-labelledby="modal-pix-title">
-      <div class="modal-backdrop" data-close-modal></div>
-      <section class="gift-modal" tabindex="-1">
-        <div class="leaf-burst" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
-        <p class="eyebrow">Pix dos noivos</p>
-        <h2 id="modal-pix-title">Nossa chave Pix</h2>
-        <p>
-          Este espaço reúne a chave Pix dos noivos, uma imagem de apoio e uma mensagem
-          de agradecimento para quem desejar contribuir com carinho.
-        </p>
-        <label>
-          Texto personalizado
-          <textarea data-save-field="pix-texto" rows="5" placeholder="Ex.: Chave Pix, nome do titular e mensagem de agradecimento."></textarea>
-        </label>
-        <label class="upload-box">
-          <input type="file" accept="image/*" multiple data-photo-input="pix" />
-          <span>Adicionar QR Code ou imagem de apoio</span>
-        </label>
-        <div class="photo-preview" data-photo-preview="pix"></div>
-        <button class="button primary full" type="button" data-save-modal>Salvar informações</button>
-      </section>
-    </div>
-
     <footer class="site-footer">
       <p>Feito com carinho para celebrar Delano &amp; Istephany.</p>
       <a href="#inicio">Voltar ao topo</a>
     </footer>
 
     <div class="click-layer" id="clickLayer" aria-hidden="true"></div>
-    <script src="script.js?v=20260603-07"></script>
+    <script src="script.js?v=20260603-08"></script>
   </body>
 </html>

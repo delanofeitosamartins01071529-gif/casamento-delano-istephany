@@ -28,16 +28,18 @@ const editableSelectors = [
   ".section-heading p",
   ".story-grid h3",
   ".story-grid p",
-  ".timeline time",
   ".timeline h3",
   ".timeline p",
   ".venue-panel h3",
   ".venue-panel p",
   ".attire-section h2",
   ".attire-section p",
-  ".palette span",
+  ".palette strong",
+  ".palette small",
   ".gift-card span",
   ".gift-card strong",
+  ".pix-panel h3",
+  ".pix-panel p",
   ".gift-modal h2",
   ".gift-modal p",
   ".memory-copy h2",
@@ -53,6 +55,7 @@ const cropContext = cropCanvas.getContext("2d");
 const authKey = "wedding-admin-authenticated";
 const pendingPhotos = new Map();
 const modalAnimationDuration = 1500;
+const textStoragePrefix = "wedding-admin-text-v3";
 
 function getEditDocument() {
   return editPreview.contentDocument || editPreview.contentWindow.document;
@@ -86,14 +89,18 @@ function lockAdmin() {
 
 function collectEditableElements() {
   const doc = getEditDocument();
-  editableElements = editableSelectors.flatMap((selector) => Array.from(doc.querySelectorAll(selector)));
+  editableElements = [];
+  editableSelectors.forEach((selector) => {
+    Array.from(doc.querySelectorAll(selector)).forEach((element, index) => {
+      element.dataset.adminKey = `${textStoragePrefix}-${selector.replace(/[^a-z0-9]+/gi, "-")}-${index}`;
+      editableElements.push(element);
+    });
+  });
   saveFieldElements = Array.from(doc.querySelectorAll("[data-save-field]"));
   doc.body.classList.add("admin-editing");
 
-  editableElements.forEach((element, index) => {
-    const key = `wedding-admin-text-${index}`;
-    element.dataset.adminKey = key;
-    const savedText = localStorage.getItem(key);
+  editableElements.forEach((element) => {
+    const savedText = localStorage.getItem(element.dataset.adminKey);
     if (savedText !== null) element.textContent = savedText;
     element.contentEditable = "true";
     element.spellcheck = true;
